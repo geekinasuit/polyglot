@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "brackets",
+    srcs = ["brackets.go"],
+    importpath = "github.com/cgruber/brackets/golang/brackets",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "brackets_test",
+    srcs = ["brackets_test.go"],
+    embed = [":brackets"],
+)
