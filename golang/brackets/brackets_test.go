@@ -36,6 +36,11 @@ func Test_ComplexText_Success(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func Test_ComplexMixedText_Success(t *testing.T) {
+	err := BalancedBrackets("This is a bit of (albeit ridiculous) explanatory text. Don't (forget [to {nest}].).")
+	require.NoError(t, err)
+}
+
 func Test_ComplexText_Mismatched(t *testing.T) {
 	err := BalancedBrackets("This is a bit of (albeit ridiculous] explanatory text. Don't (forget (to nest).).")
 	require.ErrorContains(t, err, "closing bracket ] at rune 36 mismatched with last opening bracket (")
