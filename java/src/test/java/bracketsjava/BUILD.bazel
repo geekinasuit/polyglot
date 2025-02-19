@@ -1,0 +1,11 @@
+#load("@rules_java//java:java_library.bzl", "java_test")
+
+java_test(
+    name = "BracketsTest",
+    srcs = glob(["BracketsTest.java"]),
+    deps = [
+        "//java/src/main/java/bracketsjava",
+        "@maven//:com_google_truth_truth",
+        "@maven//:junit_junit",
+    ],
+)
