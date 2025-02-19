@@ -5,6 +5,9 @@ go_library(
     srcs = ["brackets.go"],
     importpath = "github.com/cgruber/brackets/golang/brackets",
     visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_emirpasic_gods//stacks/linkedliststack",
+    ],
 )
 
 go_test(
@@ -12,7 +15,6 @@ go_test(
     srcs = ["brackets_test.go"],
     embed = [":brackets"],
     deps = [
-        "@com_github_emirpasic_gods//stacks/linkedliststack",
         "@com_github_stretchr_testify//require",
     ],
 )
