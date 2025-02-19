@@ -3,7 +3,7 @@ load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 kt_jvm_test(
     name = "BracketsTest",
     srcs = glob(["BracketsTest.kt"]),
-    associates = ["//kotlin/src/main/kotlin/brackets"],
+    associates = ["//kotlin/src/main/kotlin/bracketskt"],
     deps = [
         "@maven//:com_google_truth_truth",
         "@maven//:junit_junit",
