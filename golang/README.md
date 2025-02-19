@@ -1,0 +1,1 @@
+# Go implementation of brackets checker.
