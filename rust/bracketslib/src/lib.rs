@@ -1,0 +1,114 @@
+use std::collections::HashMap;
+
+pub fn balanced_brackets(text: &str) -> Result<(), String> {
+    let opening_brackets = HashMap::from([
+        ('(', ')'),
+        ('[', ']'),
+        ('{', '}'),
+    ]);
+    let closing_brackets = HashMap::from([
+        (')', '('),
+        (']', '['),
+        ('}', '{'),
+    ]);
+    let char_vec: Vec<char> = text.chars().collect();
+    let mut stack: Vec<char> = vec![];
+    for (i, c) in char_vec.iter().enumerate() {
+        if opening_brackets.contains_key(c) {
+            stack.push(*c)
+        } else if closing_brackets.contains_key(c) {
+            match stack.pop() {
+                None => {
+                    return Err(format!(
+                        "closing bracket {close} with no opening bracket at char {pos}",
+                        close = c,
+                        pos = i+1,
+                    ));
+                }
+                Some(open) => {
+                    if *closing_brackets.get(c).unwrap() != open {
+                        return Err(format!(
+                            "closing bracket {close} at char {pos} mismatched with last opening bracket {open}",
+                            close = c,
+                            open = open,
+                            pos = i+1,
+                        ))
+                    }
+                }
+            }
+        }
+    }
+    if !stack.is_empty() {
+        let brackets = stack.iter().map(|x| x.to_string()).collect::<Vec<String>>();
+        return Err(format!(
+            "opening brackets without closing brackets found: [{stack}]",
+            stack = brackets.join(","),
+        ));
+    }
+
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use assertor::*;
+
+    use super::*;
+
+    #[test]
+    fn test_empty_success() {
+        let r = balanced_brackets("");
+        assert_that!(r).is_ok();
+    }
+
+    #[test]
+    fn test_simple_brackets_success() {
+        let r = balanced_brackets("()");
+        assert_that!(r).is_ok();
+    }
+
+    #[test]
+    fn test_simple_brackets_fail_remaining_open() {
+        let r = balanced_brackets("(()");
+        let expected = "opening brackets without closing brackets found: [(]";
+        assert_that!(r).is_err();
+        assert_that!(r.err().unwrap()).is_equal_to(expected.to_string())
+    }
+
+    #[test]
+    fn test_simple_brackets_fail_extra_closed() {
+        let r = balanced_brackets("(()))");
+        let expected = "closing bracket ) with no opening bracket at char 5";
+        assert_that!(r).is_err();
+        assert_that!(r.err().unwrap()).is_equal_to(expected.to_string())
+    }
+
+    #[test]
+    fn test_simple_brackets_fail_mismatched() {
+        let r = balanced_brackets("((])");
+        let expected = "closing bracket ] at char 3 mismatched with last opening bracket (";
+        assert_that!(r).is_err();
+        assert_that!(r.err().unwrap()).is_equal_to(expected.to_string())
+    }
+
+    #[test]
+    fn test_complex_text_success() {
+        let r = balanced_brackets("This is a bit of (albeit ridiculous) explanatory text. Don't (forget (to nest).).");
+        assert_that!(r).is_ok()
+    }
+
+    #[test]
+    fn test_complex_mixed_text_success() {
+        let r = balanced_brackets("This is a bit of (albeit ridiculous) explanatory text. Don't (forget [to {nest}].).");
+        assert_that!(r).is_ok()
+    }
+
+    #[test]
+    fn test_complex_text_mismatched() {
+        let r = balanced_brackets("This is a bit of (albeit ridiculous] explanatory text. Don't (forget (to nest).).");
+        let expected = "closing bracket ] at char 36 mismatched with last opening bracket (";
+        assert_that!(r).is_err();
+        assert_that!(r.err().unwrap()).is_equal_to(expected.to_string())
+    }
+
+}

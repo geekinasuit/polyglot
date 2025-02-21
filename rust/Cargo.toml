@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "bracketslib",
+]
+
+[workspace.dependencies]
+assertor = { version = "*", features = ["anyhow"] }
+thiserror = "2.0.11"

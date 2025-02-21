@@ -1,0 +1,15 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+rust_library(
+    name = "bracketslib",
+    srcs = ["src/lib.rs"],
+    visibility = ["//visibility:public"],
+)
+
+rust_test(
+    name = "bracketslib_test",
+    crate = ":bracketslib",
+    deps = [
+        "@crates//:assertor",
+    ],
+)
