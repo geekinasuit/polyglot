@@ -1,19 +1,18 @@
 package bracketsjava;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 class Brackets {
-  private static final Map<Character, Character> openParentheses = Map.of(
-          '(', ')',
-          '{', '}',
-          '[', ']'
-  );
+
   private static final Map<Character, Character> closedParentheses = Map.of(
           ')', '(',
           '}', '{',
           ']', '['
   );
+  private static final Set<Character> openParentheses = new HashSet<>(closedParentheses.values());
 
   public static void balancedBrackets(String text) throws BracketsNotBalancedException {
     if (text.isEmpty()) { return; } // short-circuit
@@ -21,7 +20,7 @@ class Brackets {
     String[] chars = text.split("");
     for (int i = 0; i < chars.length; i++) {
       char c = chars[i].charAt(0);
-      if (openParentheses.containsKey(c)) {
+      if (openParentheses.contains(c)) {
         stack.push(c);
       } else if (closedParentheses.containsKey(c)) {
         Character open = closedParentheses.get(c);

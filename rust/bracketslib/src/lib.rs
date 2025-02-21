@@ -1,20 +1,16 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub fn balanced_brackets(text: &str) -> Result<(), String> {
-    let opening_brackets = HashMap::from([
-        ('(', ')'),
-        ('[', ']'),
-        ('{', '}'),
-    ]);
     let closing_brackets = HashMap::from([
         (')', '('),
         (']', '['),
         ('}', '{'),
     ]);
+    let opening_brackets: HashSet<char> = closing_brackets.values().cloned().collect();
     let char_vec: Vec<char> = text.chars().collect();
     let mut stack: Vec<char> = vec![];
     for (i, c) in char_vec.iter().enumerate() {
-        if opening_brackets.contains_key(c) {
+        if opening_brackets.contains(c) {
             stack.push(*c)
         } else if closing_brackets.contains_key(c) {
             match stack.pop() {

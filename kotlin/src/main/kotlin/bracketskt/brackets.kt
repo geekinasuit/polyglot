@@ -2,16 +2,13 @@ package bracketskt
 
 import kotlin.collections.ArrayDeque
 
-var openParentheses = mapOf(
-  '(' to ')',
-  '{' to '}',
-  '[' to ']',
-)
-var closedParentheses = mapOf(
+
+val closedParentheses = mapOf(
   ')' to '(',
   '}' to '{',
   ']' to '[',
 )
+val openParentheses = closedParentheses.values.toSet()
 
 @Throws()
 public fun balancedBrackets(text: String) {
@@ -19,11 +16,11 @@ public fun balancedBrackets(text: String) {
 
   val stack = ArrayDeque<Char>()
   for ((i, c) in text.withIndex()) {
-    when {
-      c in openParentheses -> {
+    when (c) {
+      in openParentheses -> {
         stack.push(c)
       }
-      c in closedParentheses -> {
+      in closedParentheses -> {
         val open = closedParentheses[c]
         val last = stack.removeLastOrNull() ?:
           throw BracketsNotBalancedException("closing bracket $c with no opening bracket at char ${i+1}")
