@@ -14,7 +14,7 @@ var closedParentheses = mapOf(
 )
 
 @Throws()
-fun balancedBrackets(text: String) {
+public fun balancedBrackets(text: String) {
   if (text.isEmpty()) return // short-circuit
 
   val stack = ArrayDeque<Char>()
