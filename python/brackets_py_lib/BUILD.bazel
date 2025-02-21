@@ -1,0 +1,17 @@
+load("@py_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+py_library(
+    name = "brackets_py_lib",
+    srcs = ["brackets_lib.py"],
+    visibility = ["//visibility:public"],
+)
+
+py_test(
+    name = "brackets_lib_test",
+    srcs = ["brackets_lib_test.py"],
+    deps = [
+        ":brackets_py_lib",
+        requirement("pytruth"),
+    ],
+)

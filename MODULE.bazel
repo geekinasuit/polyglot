@@ -6,6 +6,7 @@ bazel_dep(name = "rules_java", version = "8.9.0")
 bazel_dep(name = "rules_kotlin", version = "2.1.0")
 bazel_dep(name = "rules_jvm_external", version = "6.7")
 bazel_dep(name = "rules_rust", version = "0.57.1")
+bazel_dep(name = "rules_python", version = "1.1.0")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//golang:go.mod")
@@ -47,3 +48,20 @@ crate.from_cargo(
     ],
 )
 use_repo(crate, "crates")
+
+PYTHON_VERSION = "3.11"
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    configure_coverage_tool = False,
+    python_version = PYTHON_VERSION,
+)
+use_repo(python, "python_3_11", "python_versions", "pythons_hub")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "py_deps",
+    python_version = PYTHON_VERSION,
+    requirements_lock = "//:requirements.txt",
+)
+use_repo(pip, "py_deps")
