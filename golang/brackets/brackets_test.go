@@ -45,3 +45,10 @@ func Test_ComplexText_Mismatched(t *testing.T) {
 	err := BalancedBrackets("This is a bit of (albeit ridiculous] explanatory text. Don't (forget (to nest).).")
 	require.ErrorContains(t, err, "closing bracket ] at rune 36 mismatched with last opening bracket (")
 }
+
+func Test_Foo(t *testing.T) {
+	something := foo()
+	require.Equal(t, int64(2), something.Id)
+	require.Equal(t, "blah", something.Name)
+	require.Equal(t, []string{"Q", "R"}, something.Labels)
+}

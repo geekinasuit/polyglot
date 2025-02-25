@@ -4,7 +4,11 @@ import static bracketsjava.Brackets.balancedBrackets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import com.geekinasuit.polyglot.example.protos.Something;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class BracketsTest {
 
@@ -63,5 +67,13 @@ public class BracketsTest {
       balancedBrackets("This is a bit of (albeit ridiculous] explanatory text. Don't (forget (to nest).).")
     );
     assertThat(err).hasMessageThat().contains("closing bracket ] at char 36 mismatched with last opening bracket (");
+  }
+
+  @Test
+  public void testFoo()  throws Exception{
+    Something actual = Brackets.foo();
+    assertThat(actual.getId()).isEqualTo(1);
+    assertThat(actual.getName()).isEqualTo("Foo");
+    assertThat(actual.getLabelsList()).containsExactly("A", "B").inOrder();
   }
 }

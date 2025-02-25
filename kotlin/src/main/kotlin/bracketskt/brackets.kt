@@ -1,5 +1,7 @@
 package bracketskt
 
+import com.geekinasuit.polyglot.example.protos.Something
+import com.geekinasuit.polyglot.example.protos.something
 import kotlin.collections.ArrayDeque
 
 
@@ -37,3 +39,12 @@ public fun balancedBrackets(text: String) {
 class BracketsNotBalancedException(msg: String) : Exception(msg)
 
 fun <E> ArrayDeque<E>.push(item: E) = this.addLast(item)
+
+fun foo(): Something {
+  return something {
+    id = 2
+    name = "foo"
+    labels += "a"
+    labels += "b"
+  }
+}

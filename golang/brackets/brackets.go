@@ -51,3 +51,10 @@ func BalancedBrackets(text string) error {
 	}
 	return nil
 }
+func foo() Something {
+	return Something{
+		Id:     2,
+		Name:   "blah",
+		Labels: []string{"Q", "R"},
+	}
+}

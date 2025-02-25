@@ -1,4 +1,4 @@
-from python.brackets_py_lib.brackets_lib import balanced_brackets, BracketsNotBalancedException
+from python.brackets_py_lib.brackets_lib import balanced_brackets, BracketsNotBalancedException, foo
 
 import unittest
 
@@ -36,6 +36,11 @@ class ExampleTest(unittest.TestCase):
         with self.assertRaises(BracketsNotBalancedException) as err:
             balanced_brackets("This is a bit of (albeit ridiculous] explanatory text. Don't (forget (to nest).).")
         AssertThat(err.exception.message).IsEqualTo("closing bracket ] at char 36 mismatched with last opening bracket (")
+
+    def testFoo(self):
+        something = foo()
+        pass # Should return a Something, but we can't import it.
+
 
 if __name__ == "__main__":
     unittest.main()

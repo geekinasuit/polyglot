@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+use example_proto::example_protos::Something;
 
 pub fn balanced_brackets(text: &str) -> Result<(), String> {
     let closing_brackets = HashMap::from([
@@ -43,6 +44,10 @@ pub fn balanced_brackets(text: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn foo() -> Option<Something> {
+    return Some(Something { id: 1, name: "foo".to_string(), labels: vec!{ "a".to_string(), "b".to_string() } })
 }
 
 #[cfg(test)]
@@ -106,5 +111,16 @@ mod tests {
         assert_that!(r).is_err();
         assert_that!(r.err().unwrap()).is_equal_to(expected.to_string())
     }
+
+    #[test]
+    fn test_foo() {
+        let r = foo();
+        assert_that!(r).is_some();
+        let s = r.unwrap();
+        assert_that!(s.id).is_equal_to(1);
+        assert_that!(s.name).is_equal_to("foo".to_string());
+        assert_that!(s.labels).contains_exactly_in_order(vec!{"a".to_string(), "b".to_string()});
+    }
+
 
 }

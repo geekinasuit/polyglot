@@ -1,13 +1,23 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//proto:def.bzl", "go_proto_library")
 
 go_library(
     name = "brackets",
     srcs = ["brackets.go"],
-    importpath = "github.com/cgruber/brackets/golang/brackets",
+    embed = [":proto"],
+    importpath = "github.com/cgruber/polyglot/golang/brackets",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_emirpasic_gods//stacks/linkedliststack",
     ],
+)
+
+go_proto_library(
+    name = "proto",
+    importpath = "github.com/cgruber/polyglot/golang/proto",
+    proto = "//protobuf:example_proto",
+    visibility = ["//visibility:public"],
+    deps = [],
 )
 
 go_test(

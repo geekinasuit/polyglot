@@ -1,9 +1,8 @@
 package bracketsjava;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import com.geekinasuit.polyglot.example.protos.Something;
 
 class Brackets {
 
@@ -35,6 +34,14 @@ class Brackets {
     if (!stack.isEmpty()) {
       throw new BracketsNotBalancedException("opening brackets without closing brackets found: %s", stack);
     }
+  }
+
+  public static Something foo()  {
+    return Something.newBuilder()
+            .setId(1)
+            .setName("Foo")
+            .addAllLabels(new HashSet<>(Arrays.asList("A", "B")))
+            .build();
   }
 }
 class BracketsNotBalancedException extends Exception {

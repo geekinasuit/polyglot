@@ -1,9 +1,16 @@
 load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+load("@rules_rust_prost//:defs.bzl", "rust_prost_library")
 
 rust_library(
     name = "bracketslib",
     srcs = ["src/lib.rs"],
     visibility = ["//visibility:public"],
+    deps = [":example_proto"],
+)
+
+rust_prost_library(
+    name = "example_proto",
+    proto = "//protobuf:example_proto",
 )
 
 rust_test(

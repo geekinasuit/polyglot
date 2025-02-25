@@ -1,4 +1,4 @@
-module github.com/cgruber/brackets/golang
+module github.com/cgruber/polyglot/golang/brackets
 
 go 1.23.4
 

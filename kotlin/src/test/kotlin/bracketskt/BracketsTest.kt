@@ -1,8 +1,9 @@
 package bracketskt
 
+import com.geekinasuit.polyglot.example.protos.Something
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import org.junit.Assert.assertThrows
+import org.junit.Test
 
 class BracketsTest {
 
@@ -52,5 +53,11 @@ class BracketsTest {
     }
     assertThat(err).hasMessageThat().contains("closing bracket ] at char 36 mismatched with last opening bracket (")
   }
-
+  @Test
+  fun testFoo() {
+    val actual: Something = foo()
+    assertThat(actual.id).isEqualTo(2)
+    assertThat(actual.name).isEqualTo("foo")
+    assertThat(actual.labelsList).containsExactly("a", "b").inOrder()
+  }
 }

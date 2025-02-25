@@ -1,3 +1,4 @@
+# import protobuf.example_pb2 as pb
 
 class BracketsNotBalancedException(Exception):
     def __init__(self, msg):
@@ -24,3 +25,8 @@ def balanced_brackets(text):
                 raise BracketsNotBalancedException(f"closing bracket {c} at char {i+1} mismatched with last opening bracket {o}")
     if len(stack) > 0:
         raise BracketsNotBalancedException(f"opening brackets without closing brackets found: [{', '.join(stack)}]")
+
+
+def foo():
+    # return pb.Something(1, "foo", None)
+    return None
