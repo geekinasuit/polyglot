@@ -1,0 +1,22 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+
+# A package only using ts_library() instead of npm_package()
+
+ts_config(
+    name = "config",
+    src = "tsconfig.json",
+    deps = [],
+)
+
+ts_project(
+    name = "bracketslib",
+    srcs = [
+        # A typescript file is required to ensure types will exist within the `JsInfo(types)`
+        # that can be passed along the package linking chain. Otherwise no files will be copied
+        # into the sandbox for type-checking (even though tsc would pass if only the .js was there).
+        "brackets.ts",
+    ],
+    declaration = True,
+    tsconfig = ":config",
+    visibility = ["//visibility:public"],
+)
