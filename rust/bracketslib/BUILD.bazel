@@ -10,7 +10,7 @@ rust_library(
 
 rust_prost_library(
     name = "example_proto",
-    proto = "//protobuf:example_proto",
+    proto = "//protobuf",
 )
 
 rust_test(

@@ -12,6 +12,6 @@ java_proto_library(
     name = "example_proto_java",
     visibility = ["//visibility:public"],
     deps = [
-        "//protobuf:example_proto",
+        "//protobuf",
     ],
 )

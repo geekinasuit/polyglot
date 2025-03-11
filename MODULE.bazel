@@ -46,9 +46,9 @@ register_toolchains("@rust_toolchains//:all")
 crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
 crate.from_cargo(
     name = "crates",
-    cargo_lockfile = "//rust:Cargo.lock",
+    cargo_lockfile = "//:Cargo.lock",
     manifests = [
-        "//rust:Cargo.toml",
+        "//:Cargo.toml",
         "//rust/bracketslib:Cargo.toml",
     ],
 )

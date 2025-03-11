@@ -1,7 +1,7 @@
 load("@protobuf//bazel:proto_library.bzl", "proto_library")
 
 proto_library(
-    name = "example_proto",
+    name = "protobuf",
     srcs = ["example.proto"],
     # deps = ["@com_google_protobuf//:timestamp_proto"],
     visibility = ["//visibility:public"],

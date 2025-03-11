@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use example_proto::example_protos::Something;
+use protobuf::example_protos::Something;
 
 pub fn balanced_brackets(text: &str) -> Result<(), String> {
     let closing_brackets = HashMap::from([
