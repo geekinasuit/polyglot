@@ -8,3 +8,8 @@ readme.workspace = true
 [dependencies]
 assertor = { workspace = true }
 thiserror = { workspace = true }
+prost = { workspace = true }
+tokio = { workspace = true }
+
+[build-dependencies]
+tonic-build = { workspace = true }
