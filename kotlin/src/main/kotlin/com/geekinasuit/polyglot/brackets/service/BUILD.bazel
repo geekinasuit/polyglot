@@ -1,0 +1,19 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@com_github_grpc_grpc_kotlin//:kt_jvm_grpc.bzl", "kt_jvm_grpc_library", "kt_jvm_proto_library")
+
+kt_jvm_library(
+    name = "service_lib",
+    srcs = glob(["*.kt"]),
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@maven//:org_slf4j_slf4j_jdk14"],
+    deps = [
+        "//kotlin:balance_grpc_gen",
+        "//kotlin/src/main/kotlin/bracketskt",
+        "@grpc-java//stub",
+        "@maven//:com_github_ajalt_clikt_clikt_jvm",
+        "@maven//:com_linecorp_armeria_armeria",
+        "@maven//:com_linecorp_armeria_armeria_grpc",
+        "@maven//:io_github_oshai_kotlin_logging_jvm",
+        "@maven//:io_grpc_grpc_api",
+    ],
+)
