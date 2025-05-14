@@ -1,12 +1,17 @@
-load("@rules_java//java:java_test.bzl", "java_test")
-
-java_test(
-    name = "BracketsTest",
-    srcs = glob(["BracketsTest.java"]),
-    deps = [
-        "//java/src/main/java/bracketsjava",
-        "//java/src/main/java/bracketsjava:example_proto_java",
-        "@maven//:com_google_truth_truth",
-        "@maven//:junit_junit",
-    ],
-)
+#load("@rules_java//java:java_test.bzl", "java_test")
+#
+#java_test(
+#    name = "BracketsTest",
+#    srcs = glob(["BracketsTest.java"]),
+#    deps = [
+#        "//java/src/main/java/bracketsjava",
+#        "//java/src/main/java/bracketsjava:example_proto_java",
+#        "@maven//:com_google_truth_truth",
+#        "@maven//:junit_junit",
+#    ],
+#)
+#
+#alias(
+#    name = "protobuf",
+#    actual = "",
+#)

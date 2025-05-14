@@ -1,0 +1,22 @@
+ syntax = "proto3";
+
+package brackets_service;
+
+option java_multiple_files = true;
+option java_package = "com.geekinasuit.polyglot.brackets.service.protos";
+option java_outer_classname = "BalanceBracketsService";
+
+
+service BalanceBrackets {
+  rpc Balance(BalanceRequest) returns (BalanceResponse);
+}
+
+message BalanceRequest {
+  string statement = 1;
+}
+
+message BalanceResponse {
+  bool succeeded = 1;
+  string error = 2;
+  bool is_balanced = 3;
+}

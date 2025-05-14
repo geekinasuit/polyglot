@@ -6,3 +6,10 @@ proto_library(
     # deps = ["@com_google_protobuf//:timestamp_proto"],
     visibility = ["//visibility:public"],
 )
+
+proto_library(
+    name = "balance_rpc",
+    srcs = ["brackets_service.proto"],
+    # deps = ["@com_google_protobuf//:timestamp_proto"],
+    visibility = ["//visibility:public"],
+)

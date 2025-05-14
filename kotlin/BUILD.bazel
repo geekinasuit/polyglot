@@ -1,0 +1,33 @@
+load("@rules_java//java:java_binary.bzl", "java_binary")
+load("@com_github_grpc_grpc_kotlin//:kt_jvm_grpc.bzl", "kt_jvm_grpc_library", "kt_jvm_proto_library")
+
+kt_jvm_proto_library(
+    name = "balance_proto_gen",
+    visibility = ["//visibility:public"],
+    deps = ["//protobuf:balance_rpc"],
+)
+
+kt_jvm_grpc_library(
+    name = "balance_grpc_gen",
+    srcs = ["//protobuf:balance_rpc"],
+    visibility = ["//visibility:public"],
+    deps = [":balance_proto_gen"],
+)
+
+java_binary(
+    name = "brackets_client",
+    main_class = "com.geekinasuit.polyglot.brackets.client.ClientKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/client:client_lib",
+    ],
+)
+
+java_binary(
+    name = "brackets_service",
+    main_class = "com.geekinasuit.polyglot.brackets.service.ServiceKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/service:service_lib",
+    ],
+)
