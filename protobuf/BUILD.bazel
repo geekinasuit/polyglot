@@ -1,7 +1,8 @@
 load("@protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_rust//cargo:defs.bzl", "cargo_build_script")
 
 proto_library(
-    name = "protobuf",
+    name = "example_protos",
     srcs = ["example.proto"],
     # deps = ["@com_google_protobuf//:timestamp_proto"],
     visibility = ["//visibility:public"],
@@ -12,4 +13,21 @@ proto_library(
     srcs = ["brackets_service.proto"],
     # deps = ["@com_google_protobuf//:timestamp_proto"],
     visibility = ["//visibility:public"],
+)
+
+cargo_build_script(
+    name = "example_protos_rust",
+    srcs = ["build.rs"],
+    build_script_env = {
+        "RUSTFMT": "$(execpath @rules_rust//:rustfmt)",
+        "PROTOC": "$(execpath @//:protoc)",
+    },
+    data = [
+        "//protobuf:brackets_service.proto",
+        "//protobuf:example_protos.proto",
+        "@protobuf//:protoc",
+        "@rules_rust//:rustfmt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@crates//:tonic-build"],
 )

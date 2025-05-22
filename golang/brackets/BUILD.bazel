@@ -15,7 +15,7 @@ go_library(
 go_proto_library(
     name = "proto",
     importpath = "github.com/cgruber/polyglot/golang/proto",
-    proto = "//protobuf",
+    proto = "//protobuf:example_protos",
     visibility = ["//visibility:public"],
     deps = [],
 )

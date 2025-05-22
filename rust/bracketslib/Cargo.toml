@@ -1,15 +1,13 @@
 [package]
-name = "rust"
+name = "bracketslib"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
 readme.workspace = true
 
 [dependencies]
+protobuf = { path = "../../protobuf" }
 assertor = { workspace = true }
 thiserror = { workspace = true }
 prost = { workspace = true }
 tokio = { workspace = true }
-
-[build-dependencies]
-tonic-build = { workspace = true }
