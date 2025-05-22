@@ -12,7 +12,7 @@ py_library(
 py_proto_library(
     name = "example_proto_py",
     visibility = ["//visibility:public"],
-    deps = ["//protobuf"],
+    deps = ["//protobuf:example_protos"],
 )
 
 py_test(

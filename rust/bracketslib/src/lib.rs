@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+
 use protobuf::example_protos::Something;
 
 pub fn balanced_brackets(text: &str) -> Result<(), String> {

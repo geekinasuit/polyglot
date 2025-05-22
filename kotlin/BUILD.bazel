@@ -4,12 +4,12 @@ load("@com_github_grpc_grpc_kotlin//:kt_jvm_grpc.bzl", "kt_jvm_grpc_library", "k
 kt_jvm_proto_library(
     name = "balance_proto_gen",
     visibility = ["//visibility:public"],
-    deps = ["//protobuf:balance_rpc"],
+    deps = ["//protobuf:brackets_service"],
 )
 
 kt_jvm_grpc_library(
     name = "balance_grpc_gen",
-    srcs = ["//protobuf:balance_rpc"],
+    srcs = ["//protobuf:brackets_service"],
     visibility = ["//visibility:public"],
     deps = [":balance_proto_gen"],
 )

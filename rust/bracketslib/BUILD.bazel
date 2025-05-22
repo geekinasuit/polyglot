@@ -1,16 +1,28 @@
 load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 load("@rules_rust_prost//:defs.bzl", "rust_prost_library")
+load("@rules_rust//cargo:defs.bzl", "cargo_build_script")
 
 rust_library(
     name = "bracketslib",
     srcs = ["src/lib.rs"],
     visibility = ["//visibility:public"],
-    deps = [":example_proto"],
+    deps = [
+        ":example_proto",
+        ":balance_rpc",
+        #":generate_rust_proto",
+        "@crates//:tokio",
+        "@crates//:tonic",
+    ],
 )
 
 rust_prost_library(
     name = "example_proto",
-    proto = "//protobuf",
+    proto = "//protobuf:example_protos",
+)
+
+rust_prost_library(
+    name = "balance_rpc",
+    proto = "//protobuf:balance_rpc",
 )
 
 rust_test(
