@@ -1,0 +1,47 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//proto:def.bzl", "go_grpc_library", "go_proto_library")
+
+go_library(
+    name = "brackets",
+    srcs = [
+        "brackets.go",
+        "generate.go",  # Part of the go-build infrastructure, not used in bazel.
+    ],
+    embed = [":proto"],
+    importpath = "github.com/geekinasuit/polyglot/golang/pkg/libs/brackets",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_emirpasic_gods//stacks/linkedliststack",
+    ],
+)
+
+go_proto_library(
+    name = "proto",
+    importpath = "github.com/geekinasuit/polyglot/golang/pkg/libs/brackets",
+    proto = "//protobuf",
+    visibility = ["//visibility:public"],
+    deps = [],
+)
+
+go_test(
+    name = "brackets_test",
+    srcs = ["brackets_test.go"],
+    embed = [":brackets"],
+    deps = [
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+go_grpc_library(
+    name = "grpc",
+    # importpath = "github.com/rules-proto-grpc/rules_proto_grpc/example/proto",
+    protos = [
+        "//protobuf",
+    ],
+)
+
+# TODO: Add OpenAPI v2 generation
+# gateway_openapiv2_compile(
+#     name = "calculator_gateway_openapi",
+#     protos = [":calculator_proto"],
+# )

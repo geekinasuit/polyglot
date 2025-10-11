@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cgruber/polyglot/golang/brackets"
+	"github.com/geekinasuit/polyglot/golang/pkg/libs/brackets"
 	"github.com/spf13/cobra"
 )
 

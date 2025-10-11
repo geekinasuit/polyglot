@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  bazel-build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,15 +20,12 @@ jobs:
         repository-cache: true
     - name: Build project # Fail fast if the build doesn't pass.
       run: bazel build //...
-    - name: Build project
-      run: bazel test //...
 
-  test-go-exec:
-    needs: build
+  test:
+    needs: bazel-build
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v4
       - uses: bazel-contrib/setup-bazel@0.13.0
@@ -37,15 +34,46 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
       - name: Build project
-        run: bazel run //golang
+        run: bazel test //...
 
-
-  test-kotlin-exec:
-    needs: build
+  test-go-exec-bazel:
+    needs: bazel-build
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazel-contrib/setup-bazel@0.13.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+      - name: Build project
+        run: bazel run //golang/cmd/brackets
 
+  test-go-exec-make:
+    needs: bazel-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v3
+      - uses: arduino/setup-protoc@v3
+      - name: Install protoc-gen-go and protoc-gen-go-grpc
+        run: |
+          go install github.com/golang/protobuf/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+      - name: Add Go bin directory to PATH
+        run: echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - run: make go-test
+      - run: make go-run
+
+  test-kotlin-exec-bazel:
+    needs: bazel-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: bazel-contrib/setup-bazel@0.13.0
