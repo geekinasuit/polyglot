@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.boolean
 import com.github.ajalt.clikt.parameters.types.int
 import com.linecorp.armeria.server.Server
 import com.linecorp.armeria.server.grpc.GrpcService
@@ -17,7 +18,7 @@ private const val DEFAULT_PORT = 8888
 private val log = KotlinLogging.logger {}
 
 class BracketsService : CliktCommand(name = "brackets_service") {
-  val host by option().default(DEFAULT_HOST).help("Service IP port number")
+  val host by option().default(DEFAULT_HOST).help("Service Hostname")
   val port: Int by option().int().default(DEFAULT_PORT).help("Service IP port number")
 
   override fun run() {

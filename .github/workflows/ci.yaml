@@ -8,27 +8,78 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v4
+    - uses: bazel-contrib/setup-bazel@0.13.0
+      with:
+        bazelisk-cache: true
+        disk-cache: ${{ github.workflow }}
+        repository-cache: true
+    - name: Build project # Fail fast if the build doesn't pass.
+      run: bazel build //...
+    - name: Build project
+      run: bazel test //...
 
+  test-go-exec:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: bazel-contrib/setup-bazel@0.13.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+      - name: Build project
+        run: bazel run //golang
 
 
-    - uses: bazel-contrib/setup-bazel@0.13.0
-      with:
-        # Avoid downloading Bazel every time.
-        bazelisk-cache: true
-        # Store build cache per workflow.
-        disk-cache: ${{ github.workflow }}
-        # Share repository cache between workflows.
-        repository-cache: true
+  test-kotlin-exec:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-    # Fail fast if the build doesn't pass.
-    - name: Build project
-      run: bazel build //...
-    
-    - name: Build project
-      run: bazel test //...
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazel-contrib/setup-bazel@0.13.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+      - name: Set port
+        run: |
+          echo "SERVICE_PORT=19999" >> $GITHUB_ENV
+      - name: Build project
+        run: |
+          bazel build //kotlin:brackets_client
+          bazel build //kotlin:brackets_service
+      - name: Setup Service
+        run: |
+          bazel-bin/kotlin/brackets_service --port=${{ env.SERVICE_PORT }} &
+          SERVICE_PID=$!
+          echo "SERVICE_PID=${SERVICE_PID}" >> $GITHUB_ENV
+          timeout=30; while ! (echo > /dev/tcp/localhost/${{ env.SERVICE_PORT }}) &>/dev/null; do ((timeout--)) || (echo "Service failed to start on port ${{ env.SERVICE_PORT }}!" && exit 1); sleep 1; done; echo "Service is up on port ${{ env.SERVICE_PORT }} with pid ${SERVICE_PID}."
+      - name: Execute Client
+        run: |
+          echo "foo ( bar ( baz ) { blah } [ what!!? ] )" > test1.txt
+          echo "foo ( bar ( baz ] { blah } [ what!!? ] )" > test2.txt
+          bazel-bin/kotlin/brackets_client --port=${{ env.SERVICE_PORT }} test1.txt | grep "Brackets are balanced" && echo "TEST PASSED" || (echo "TEST FAILED" ; exit 1)
+          bazel-bin/kotlin/brackets_client --port=${{ env.SERVICE_PORT }} test2.txt | grep "Brackets are NOT balanced" && echo "TEST PASSED" || (echo "TEST FAILED" ; exit 1)
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "Stopping the service with PID ${{ env.SERVICE_PID }}..."
+          # Check if the PID was actually set and if the process exists
+          if [ -n "${{ env.SERVICE_PID }}" ]; then
+            kill ${{ env.SERVICE_PID }}
+            echo "Shutdown signal sent."
+          else
+            echo "Service PID not found."
+          fi
