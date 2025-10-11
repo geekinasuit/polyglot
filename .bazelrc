@@ -1,2 +1,3 @@
+common --enable_workspace=true
 build --enable_workspace
 info --enable_workspace

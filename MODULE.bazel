@@ -7,22 +7,23 @@ module(name = "polyglot")
 # this configuration becomes quite a bit simpler.
 #
 
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "rules_go", version = "0.53.0")
-bazel_dep(name = "gazelle", version = "0.42.0")
-bazel_dep(name = "rules_java", version = "8.9.0")
-bazel_dep(name = "rules_kotlin", version = "2.1.0")
-bazel_dep(name = "rules_jvm_external", version = "6.7")
-bazel_dep(name = "rules_rust", version = "0.57.1")
-bazel_dep(name = "rules_python", version = "1.1.0")
-bazel_dep(name = "protobuf", version = "29.3")
-bazel_dep(name = "rules_rust_prost", version = "0.57.1")
-bazel_dep(name = "grpc", version = "1.71.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "rules_go", version = "0.57.0")
+bazel_dep(name = "gazelle", version = "0.45.0")
+bazel_dep(name = "rules_java", version = "8.14.0")
+bazel_dep(name = "rules_kotlin", version = "2.1.9")
+bazel_dep(name = "rules_jvm_external", version = "6.8")
+bazel_dep(name = "rules_rust", version = "0.65.0")
+bazel_dep(name = "rules_rust_prost", version = "0.65.0")
+bazel_dep(name = "rules_python", version = "1.6.3")
+bazel_dep(name = "protobuf", version = "32.1")
+bazel_dep(name = "grpc", version = "1.74.1")
 bazel_dep(name = "protoc-gen-validate", version = "1.2.1.bcr.1")  # Account for a bug in 1.2.1
 
 # used by GRPC-Kotlin
-bazel_dep(name = "grpc-java", version = "1.71.0")
-bazel_dep(name = "rules_proto_grpc_java", version = "5.0.1")
+bazel_dep(name = "grpc-java", version = "1.74.0")
+#bazel_dep(name = "rules_proto_grpc_java", version = "5.7.1")
+bazel_dep(name = "grpc_kotlin", version = "1.5.0")
 
 # grpc-kotlin does not support bzlmod, so it's loaded in WORKSPACE
 
@@ -80,7 +81,7 @@ maven.install(
         "https://repo1.maven.org/maven2",
     ],
 )
-use_repo(maven, "com_google_guava_guava", "maven")  # Guava called out to support kotlin-grpc which doesn't use bzlmod
+use_repo(maven, "com_google_guava_guava", "maven", "grpc_kotlin_maven")  # Guava called out to support kotlin-grpc which doesn't use bzlmod
 
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
 rust.toolchain(

@@ -1,17 +1,17 @@
-#load("@rules_java//java:java_library.bzl", "java_library")
-#load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
-#
-#java_library(
-#    name = "bracketsjava",
-#    srcs = glob(["*.java"]),
-#    visibility = ["//visibility:public"],
-#    deps = [":example_proto_java"],
-#)
-#
-#java_proto_library(
-#    name = "example_proto_java",
-#    visibility = ["//visibility:public"],
-#    deps = [
-#        "//protobuf",
-#    ],
-#)
+load("@rules_java//java:java_library.bzl", "java_library")
+load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
+
+java_library(
+   name = "bracketsjava",
+   srcs = glob(["*.java"]),
+   visibility = ["//visibility:public"],
+   deps = [":example_proto_java"],
+)
+
+java_proto_library(
+   name = "example_proto_java",
+   visibility = ["//visibility:public"],
+   deps = [
+       "//protobuf",
+   ],
+)

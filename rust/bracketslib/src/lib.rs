@@ -121,6 +121,4 @@ mod tests {
         assert_that!(s.name).is_equal_to("foo".to_string());
         assert_that!(s.labels).contains_exactly_in_order(vec!{"a".to_string(), "b".to_string()});
     }
-
-
 }

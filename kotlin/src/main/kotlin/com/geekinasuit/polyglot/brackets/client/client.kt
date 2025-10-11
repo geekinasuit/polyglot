@@ -35,7 +35,7 @@ class BracketsClient : CliktCommand(name = "brackets_client") {
     println("========")
     val channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
     val stub = BalanceBracketsGrpcKt.BalanceBracketsCoroutineStub(channel)
-    val request = BalanceRequest.newBuilder().setStatement(buffer.toString()).build()
+    val request = BalanceRequest.newBuilder().setStatement(buffer).build()
     val response =
       try {
         stub.balance(request)
