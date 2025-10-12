@@ -7,7 +7,7 @@ option java_multiple_files = true;
 option java_package = "com.geekinasuit.polyglot.example.protos";
 option java_outer_classname = "ExampleProtos";
 
-option go_package = "github.com/cgruber/polyglot/golang/brackets";
+option go_package = "github.com/geekinasuit/polyglot/golang/pkg/libs/brackets";
 
 option py_generic_services=true;
 

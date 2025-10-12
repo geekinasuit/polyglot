@@ -1,0 +1,7 @@
+go 1.25.2
+
+// Declare any new modules here.
+use (
+	./golang/cmd/brackets
+	./golang/pkg/libs/brackets
+)

@@ -6,6 +6,8 @@ option java_multiple_files = true;
 option java_package = "com.geekinasuit.polyglot.brackets.service.protos";
 option java_outer_classname = "BalanceBracketsService";
 
+option go_package = "github.com/geekinasuit/polyglot/golang/pkg/services/brackets/proto";
+
 
 service BalanceBrackets {
   rpc Balance(BalanceRequest) returns (BalanceResponse);
