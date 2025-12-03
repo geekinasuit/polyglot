@@ -1,0 +1,22 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+ts_project(
+    name = "server",
+    srcs = glob(["**/*.ts"]),
+    tsconfig = "//typescript:tsconfig",
+    root_dir = "//typescript",
+    deps = [
+        "//typescript/lib",
+        "//typescript:brackets_proto_ts", # The generated types
+        "//:node_modules/@nestjs/common",
+        "//:node_modules/@nestjs/core",
+        "//:node_modules/@nestjs/microservices",
+        "//:node_modules/@nestjs/platform-express",
+        "//:node_modules/@grpc/grpc-js",
+        "//:node_modules/@grpc/proto-loader",
+        "//:node_modules/reflect-metadata",
+        "//:node_modules/rxjs",
+        "//:node_modules/ts-proto",
+    ],
+    visibility = ["//visibility:public"],
+)

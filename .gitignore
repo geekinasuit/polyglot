@@ -36,3 +36,5 @@ MODULE.bazel.lock
 
 target
 out
+node_modules
+.yarn

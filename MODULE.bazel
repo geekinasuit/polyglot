@@ -7,6 +7,7 @@ module(name = "polyglot")
 # this configuration becomes quite a bit simpler.
 #
 
+# Rules/Modules imports
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 bazel_dep(name = "rules_go", version = "0.57.0")
 bazel_dep(name = "gazelle", version = "0.45.0")
@@ -21,7 +22,13 @@ bazel_dep(name = "grpc", version = "1.74.1")
 bazel_dep(name = "protoc-gen-validate", version = "1.2.1.bcr.1")  # Account for a bug in 1.2.1
 bazel_dep(name = "grpc-java", version = "1.74.0")
 bazel_dep(name = "grpc_kotlin", version = "1.5.0")
+# JavaScript / TypeScript / Node.js
+bazel_dep(name = "aspect_rules_js", version = "2.1.0")
+bazel_dep(name = "aspect_rules_ts", version = "3.2.0")
+bazel_dep(name = "aspect_rules_swc", version = "2.0.0")
+bazel_dep(name = "rules_nodejs", version = "6.3.0")
 
+# Go configuration
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_work = "//:go.work")
 use_repo(
@@ -31,6 +38,7 @@ use_repo(
     "com_github_stretchr_testify",
 )
 
+# JVM (java and kotlin) deps management
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.artifact(
     testonly = True,
@@ -78,6 +86,7 @@ maven.install(
 )
 use_repo(maven, "com_google_guava_guava", "maven", "grpc_kotlin_maven")  # Guava called out to support kotlin-grpc which doesn't use bzlmod
 
+# Rust Cargo configuration
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
 rust.toolchain(
     edition = "2021",
@@ -98,6 +107,7 @@ crate.from_cargo(
 )
 use_repo(crate, "crates")
 
+# Python rules configuration.
 PYTHON_VERSION = "3.11"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
@@ -114,3 +124,29 @@ pip.parse(
     requirements_lock = "//:requirements.txt",
 )
 use_repo(pip, "py_deps")
+
+# Javascript/Typescript configuration
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
+node.toolchain(node_version = "20.11.0")
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+
+npm.npm_translate_lock(
+    name = "npm",
+    pnpm_lock = "//:yarn.lock",
+    npmrc = "//:.npmrc",
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+
+use_repo(npm, "npm")
+
+rules_ts_ext = use_extension(
+    "@aspect_rules_ts//ts:extensions.bzl",
+    "ext",
+)
+
+rules_ts_ext.deps(
+    ts_version_from = "//:package.json",
+)
+
+use_repo(rules_ts_ext, "npm_typescript")

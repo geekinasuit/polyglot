@@ -1,0 +1,22 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+load(":defs.bzl", "ts_proto_library")
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//visibility:public"],
+)
+
+# --- Generated Code (Shared) ---
+
+ts_proto_library(
+    name = "brackets_proto_ts",
+    proto = "brackets_service.proto",
+    out_dir = "generated", # Output to typescript/generated/
+)
+
+ts_proto_library(
+    name = "example_proto_ts",
+    proto = "example.proto",
+    out_dir = "generated",
+)

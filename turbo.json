@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "outputs": ["dist/**", "bazel-bin/**"],
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "inputs": ["src/**/*.ts", "test/**/*.ts"],
+      "dependsOn": ["build"]
+    },
+    "lint": {},
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}
