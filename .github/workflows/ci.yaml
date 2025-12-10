@@ -13,13 +13,19 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@v4
+    - uses: cashapp/activate-hermit@v1
+      with:
+        cache: 'true'
+    - run: hermit init
     - uses: bazel-contrib/setup-bazel@0.13.0
       with:
         bazelisk-cache: true
         disk-cache: ${{ github.workflow }}
         repository-cache: true
     - name: Build project # Fail fast if the build doesn't pass.
-      run: bazel build //...
+      run: |
+        source bin/activate-hermit
+        bazel build //...
 
   test:
     needs: bazel-build
@@ -28,6 +34,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: cashapp/activate-hermit@v1
+        with:
+          cache: 'true'
+      - run: hermit init
       - uses: bazel-contrib/setup-bazel@0.13.0
         with:
           bazelisk-cache: true
@@ -43,6 +53,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: cashapp/activate-hermit@v1
+        with:
+          cache: 'true'
+      - run: hermit init
       - uses: bazel-contrib/setup-bazel@0.13.0
         with:
           bazelisk-cache: true
@@ -58,6 +72,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: cashapp/activate-hermit@v1
+        with:
+          cache: 'true'
+      - run: hermit init
       - uses: actions/setup-go@v3
       - uses: arduino/setup-protoc@v3
       - name: Install protoc-gen-go and protoc-gen-go-grpc
@@ -76,6 +94,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: cashapp/activate-hermit@v1
+        with:
+          cache: 'true'
+      - run: hermit init
       - uses: bazel-contrib/setup-bazel@0.13.0
         with:
           bazelisk-cache: true
