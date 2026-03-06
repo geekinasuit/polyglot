@@ -53,10 +53,32 @@ Before starting any non-trivial implementation work: check `thoughts/shared/tick
 
 Never leave TICKETS.md out of sync with the actual ticket files.
 
+### GitHub Issues: Thin Layer for PR Linkage
+
+Ticket files are the source of truth. GitHub Issues serve one specific purpose: enabling `fixes #N` PR cross-referencing in GitHub's UI.
+
+**Rules:**
+- **Do not pre-create GitHub issues for every ticket file.** Only create a GitHub issue when you are about to open a PR for that work.
+- **Keep GitHub issues thin** — title, one-line summary, and this exact line in the body so automation can locate the ticket file:
+  ```
+  **Ticket:** `thoughts/shared/tickets/<filename>.md`
+  ```
+- **When opening a PR**, include `fixes #N` (or `closes #N`) in the PR description to link the issue. GitHub will auto-close the issue when the PR merges.
+- **When opening a PR, also update the ticket file and TICKETS.md in the same branch.** Set the ticket file's `status` to `resolved`, add a `github_issue: N` frontmatter field, and move its row to the Resolved section of `TICKETS.md`. These changes travel with the PR and are reviewed together — this is the primary mechanism for keeping ticket state current.
+
+Agents working in planning, research, or ticketing mode only touch ticket files — no GitHub issue needed. Agents opening PRs create the thin GitHub issue and update the ticket state as part of the same PR branch.
+
+### Safety Net: GitHub Action for Missed Ticket Updates
+
+A GitHub Action (see ticket `github-action-ticket-close-sync.md`) will serve as a safety net for cases where a PR was merged without the agent having updated the ticket file — e.g. manual closes, hotfixes, or agent oversights. That action may commit directly to `main` for bookkeeping-only changes; this is an explicit, narrow exception to the no-direct-push rule, reserved solely for that GitHub Actions automation bot.
+
+**This exception does not extend to agents.** An agent that notices a ticket is out of sync must still go through a branch and PR — it may not commit directly to `main` even for bookkeeping purposes. Until the action exists, agents should be especially careful to include ticket updates in every PR branch.
+
 ### Ticket File Conventions
 
 - Filename: `<kebab-case-description>.md` in `thoughts/shared/tickets/`
 - Frontmatter fields: `date`, `status` (open/resolved), `priority` (low/medium/high), `area` (comma-separated)
+- Optional frontmatter: `github_issue: <N>` once a GitHub issue has been created
 - Required sections: Summary, Current State (or Resolution if resolved), Goals or acceptance criteria, References (file paths with line numbers)
 
 ---
