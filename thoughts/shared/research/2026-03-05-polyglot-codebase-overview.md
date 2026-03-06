@@ -322,11 +322,6 @@ No prior research documents exist in `thoughts/`. The directory scaffold (`share
 
 None remaining.
 
-## Resolved / Ticketed
+## Tickets
 
-- **Cache config in repo `.bazelrc`** — resolved: machine-specific cache config removed from `.bazelrc`; developers should configure cache in `user.bazelrc` (gitignored) or `~/.bazelrc`
-- **`grpc_kotlin` bzlmod migration** — planned when a bzlmod-native version becomes available; ticketed: `thoughts/shared/tickets/grpc-kotlin-bzlmod-migration.md`
-- **Go `go_grpc_library` wrong proto target** (`golang/pkg/libs/brackets/BUILD.bazel:35`) — ticketed: `thoughts/shared/tickets/go-grpc-library-wrong-proto-target.md`
-- **Python proto import disabled** — incomplete work, ticketed: `thoughts/shared/tickets/python-proto-integration-incomplete.md`
-- **Kotlin gRPC interceptors not wired up** — incomplete work, ticketed: `thoughts/shared/tickets/kotlin-grpc-interceptors-not-implemented.md`
-- **gRPC service/client for Go, Java, and Rust** — confirmed future work; Kotlin is the current reference implementation
+See `thoughts/shared/tickets/TICKETS.md` for the canonical summary of all open and resolved work items arising from this research.

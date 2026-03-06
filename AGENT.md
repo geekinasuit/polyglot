@@ -27,12 +27,37 @@ The compressed format uses `§SECTION` markers and an `§ABBREV` table at the to
 
 ```
 thoughts/shared/research/   # Research documents (read before implementing)
-thoughts/shared/tickets/    # Open work items (check before starting new work)
+thoughts/shared/tickets/    # Ticket files + TICKETS.md index (check before starting new work)
 thoughts/shared/plans/      # Implementation plans
 thoughts/shared/handoffs/   # Session handoff documents
 ```
 
-Before starting any non-trivial implementation work: check `thoughts/shared/tickets/` for existing tickets and `thoughts/shared/research/` for relevant prior research.
+Before starting any non-trivial implementation work: check `thoughts/shared/tickets/TICKETS.md` for a summary of open and resolved work, and `thoughts/shared/research/` for relevant prior research.
+
+---
+
+## Working with Tickets
+
+### TICKETS.md is the Canonical Index
+
+`thoughts/shared/tickets/TICKETS.md` is the single source of truth for all open and resolved work. Individual files in that directory contain full detail; `TICKETS.md` contains the summary. **Do not maintain ticket inventories anywhere else** — other files (AGENT.md, research docs, plans) should reference `TICKETS.md` rather than listing tickets inline.
+
+### Keeping TICKETS.md Current
+
+**Any time you create, modify, resolve, or delete a ticket file, you must also update `TICKETS.md`** in the same operation. Specifically:
+
+- **New ticket**: add a row to the Open table with file link, priority, area, and one-line summary
+- **Ticket resolved**: move it from the Open table to the Resolved section; if the ticket file is deleted, note the resolution inline in the Resolved section (no file link needed)
+- **Ticket updated** (priority, area, summary changed): update the corresponding row in TICKETS.md
+- **Ticket deleted without resolution** (e.g. duplicate or invalid): remove its row from TICKETS.md entirely
+
+Never leave TICKETS.md out of sync with the actual ticket files.
+
+### Ticket File Conventions
+
+- Filename: `<kebab-case-description>.md` in `thoughts/shared/tickets/`
+- Frontmatter fields: `date`, `status` (open/resolved), `priority` (low/medium/high), `area` (comma-separated)
+- Required sections: Summary, Current State (or Resolution if resolved), Goals or acceptance criteria, References (file paths with line numbers)
 
 ---
 
@@ -128,6 +153,15 @@ This repository is backed by GitHub and uses **jj (Jujutsu)** as the preferred V
 - **If `jj` is not available**: fall back to `git` — jj maintains a compatible git backend so standard git commands work.
 - Use the `gh` CLI for GitHub API interactions (PRs, issues, repo queries) regardless of which VCS tool is in use.
 
+### Branch and PR Requirements
+
+**It is never permissible to push directly to `main`.** All changes must go through a branch or bookmark and be submitted as a pull request:
+
+- With jj: create a bookmark (`jj bookmark create <name>`), push it, open a PR via `gh pr create`
+- With git: create a branch, push it, open a PR via `gh pr create`
+
+**All PRs must be reviewed and merged by a human.** This applies even when the PR was authored entirely by an agent acting under the user's GitHub account. An agent must not merge its own PRs — it may open them, describe them, and request review, but the merge action requires explicit human approval.
+
 ---
 
 ## Thoughts Directory Workflow
@@ -151,16 +185,9 @@ Implementation plans live in `thoughts/shared/plans/`. A plan should be created 
 
 ---
 
-## Known Incomplete Work (Summary)
+## Known Incomplete Work
 
-See `thoughts/shared/tickets/` for full details. As of initial research (2026-03-05):
-
-- **Go, Java, Python, Rust** have no gRPC service or client — future work
-- **TypeScript** variant does not yet exist — future work (includes OpenAPI REST endpoints)
-- **Python** proto import is disabled — incomplete
-- **Go** `go_grpc_library` references wrong proto target — bug
-- **Kotlin** gRPC interceptors are stubbed but not implemented — incomplete
-- **`grpc_kotlin`** requires bzlmod workaround — migrate when upstream supports it
+See `thoughts/shared/tickets/TICKETS.md` for the canonical summary of open and resolved work items, and `thoughts/shared/tickets/` for individual ticket files.
 
 ---
 

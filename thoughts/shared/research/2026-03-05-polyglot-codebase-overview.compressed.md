@@ -205,15 +205,7 @@ RC:5 [removed; was machine-specific disk_cache; resolved]
 8. proto-as-contract: //pb:protobuf+//pb:balance_rpc=sole sources; generated never committed
 
 §TICKETS
-grpc-kotlin-bzlmod-migration [low] when bzlmod-native grpc_kotlin available
-go-grpc-library-wrong-proto-target [low] BUILD.bazel:35 //pb:protobuf→should be //pb:balance_rpc
-python-proto-integration-incomplete [low] import+foo() disabled
-kotlin-grpc-interceptors-not-implemented [low] wrapService() vararg hook unused
-go-grpc-client-server [med] svc+client; prereq:go-grpc-library-fix; ref:KT
-java-grpc-client-server [med] svc+client; ref:KT
-python-grpc-client-server [med] svc+client; prereq:python-proto-fix; ref:KT
-rust-grpc-client-server [med] add tonic; svc+client; ref:KT
-typescript-grpc-openapi-variant [med] new-lang; GRPC-svc+client(KT-compat)+OpenAPI-REST; dual yarn/npm+BZL; BZL-structure-ref:KT
+→thoughts/shared/tickets/TICKETS.md [canonical; do not duplicate here]
 
 §HISTORY
 first research doc for project; thoughts/ scaffold was empty prior to this session
