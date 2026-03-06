@@ -324,7 +324,7 @@ None remaining.
 
 ## Resolved / Ticketed
 
-- **Cache config in repo `.bazelrc`** — both `--disk_cache` (machine-specific path) and the commented-out `--remote_cache` should not be in repo-controlled config; ticketed: `thoughts/shared/tickets/move-cache-config-out-of-repo-bazelrc.md`
+- **Cache config in repo `.bazelrc`** — resolved: machine-specific cache config removed from `.bazelrc`; developers should configure cache in `user.bazelrc` (gitignored) or `~/.bazelrc`
 - **`grpc_kotlin` bzlmod migration** — planned when a bzlmod-native version becomes available; ticketed: `thoughts/shared/tickets/grpc-kotlin-bzlmod-migration.md`
 - **Go `go_grpc_library` wrong proto target** (`golang/pkg/libs/brackets/BUILD.bazel:35`) — ticketed: `thoughts/shared/tickets/go-grpc-library-wrong-proto-target.md`
 - **Python proto import disabled** — incomplete work, ticketed: `thoughts/shared/tickets/python-proto-integration-incomplete.md`
