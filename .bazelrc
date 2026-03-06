@@ -1,3 +1,8 @@
 common --enable_workspace=true --java_runtime_version=21
 build --enable_workspace
 info --enable_workspace
+
+# CI config: enable sandboxing (seatbelt on macOS, namespaces on Linux) and local disk cache.
+# All Buildkite pipeline steps pass --config=ci.
+build:ci --spawn_strategy=sandboxed
+build:ci --disk_cache=/tmp/bazel-disk-cache
