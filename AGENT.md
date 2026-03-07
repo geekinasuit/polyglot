@@ -205,6 +205,8 @@ Research documents live in `thoughts/shared/research/`. Filename convention: `YY
 
 Implementation plans live in `thoughts/shared/plans/`. A plan should be created before implementing any non-trivial feature. Plans can reference tickets. Research before planning; plan before implementing.
 
+**Plans describe intent, not implementation.** Do not write actual code in a plan — not full file contents, not complete function bodies, not copy-pasteable commands. Use prose, light pseudocode, or short illustrative fragments only when they communicate something that prose alone cannot. The implementation agent will write the real code; the plan's job is to describe the what and why, the file layout, the dependencies, and the success criteria clearly enough that the implementation can proceed without ambiguity.
+
 ---
 
 ## Known Incomplete Work
