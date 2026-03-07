@@ -14,8 +14,9 @@ set -euo pipefail
 if ! command -v bazel &> /dev/null; then
   echo "--- Installing bazelisk"
   apt-get update -qq && apt-get install -y curl python3 git > /dev/null
+  ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
   curl -fsSL -o /usr/local/bin/bazel \
-    https://github.com/bazelbuild/bazelisk/releases/download/v1.20.0/bazelisk-linux-amd64
+    https://github.com/bazelbuild/bazelisk/releases/download/v1.20.0/bazelisk-linux-${ARCH}
   chmod +x /usr/local/bin/bazel
 fi
 
