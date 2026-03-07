@@ -111,7 +111,7 @@ steps:
       apt-get update -qq && apt-get install -y protobuf-compiler git make > /dev/null
       go install github.com/golang/protobuf/protoc-gen-go@latest
       go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-      export PATH="$PATH:$(go env GOPATH)/bin"
+      export PATH="$$PATH:$$(go env GOPATH)/bin"
       make go-test
       make go-run
 
