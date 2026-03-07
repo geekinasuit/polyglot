@@ -102,7 +102,7 @@ steps:
     depends_on: test-linux
     plugins:
       - docker#v5.11.0:
-          image: "golang:1.24-bookworm"
+          image: "golang:1.25-bookworm"
           volumes:
             - "/tmp/bk-go-cache:/go/pkg/mod"
           environment:
