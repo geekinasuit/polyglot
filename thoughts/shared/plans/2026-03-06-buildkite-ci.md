@@ -146,7 +146,7 @@ A future improvement (noted below) would replace this with a pre-built CI image.
 ### Success Criteria
 
 #### Automated Verification:
-- [ ] `buildkite-agent pipeline upload .buildkite/pipeline.yml` produces no YAML errors
+- [x] `buildkite-agent pipeline upload .buildkite/pipeline.yml` produces no YAML errors
 
 #### Manual Verification:
 - [ ] First full build passes end-to-end in the Buildkite dashboard
@@ -177,8 +177,8 @@ Make the script executable (`chmod +x`) as part of creation.
 ### Success Criteria
 
 #### Automated Verification:
-- [ ] `shellcheck .buildkite/scripts/kotlin-integration-test.sh` passes with no errors
-- [ ] Script is executable: `test -x .buildkite/scripts/kotlin-integration-test.sh`
+- [x] `shellcheck .buildkite/scripts/kotlin-integration-test.sh` passes with no errors
+- [x] Script is executable: `test -x .buildkite/scripts/kotlin-integration-test.sh`
 
 #### Manual Verification:
 - [ ] Script runs to completion locally on macOS against pre-built binaries

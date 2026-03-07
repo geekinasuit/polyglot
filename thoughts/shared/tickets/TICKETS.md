@@ -38,3 +38,4 @@ Ticket files are the source of truth. GitHub Issues are a thin, work-time-only l
 | Summary | Resolution |
 |---|---|
 | Machine-specific cache config in repo `.bazelrc` | Resolved directly: `--disk_cache` and `--remote_cache` lines removed from `.bazelrc`; developers configure cache in `user.bazelrc` (gitignored) or `~/.bazelrc` |
+| Buildkite CI pipeline (issue #13, PR #14) | Implemented pipeline mirroring GitHub Actions: Linux steps via Docker plugin, macOS steps on native agent (`os=macos`). Fixes during stabilization: cluster assignment, arch-aware bazelisk download, `build-essential` for `rules_cc`, Go image bumped to 1.25, `$$`-escaped Buildkite variable interpolation in Docker command blocks. |

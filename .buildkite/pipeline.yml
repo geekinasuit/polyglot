@@ -1,0 +1,139 @@
+# Buildkite CI Pipeline
+#
+# Mirrors .github/workflows/ci.yaml with two platforms:
+#   Linux  — steps run inside ubuntu:22.04 Docker containers via the Docker plugin
+#   macOS  — steps run natively on the Mac agent with Bazel seatbelt sandboxing
+#
+# Dependency graph:
+#   build-linux ──┬── test-linux ──┬── go-exec-bazel-linux
+#                 │                ├── go-exec-make-linux
+#                 │                └── kotlin-integration-linux
+#
+#   build-macos ──┴── test-macos ──┬── go-exec-bazel-macos
+#                                  └── kotlin-integration-macos
+#
+# Plugins:
+#   docker#v5.11.0  https://github.com/buildkite-plugins/docker-buildkite-plugin  (Apache-2.0)
+
+env:
+  BUILDKITE_CLEAN_CHECKOUT: "true"
+
+steps:
+
+  ##############################################################################
+  # BUILD PHASE — fail fast before running tests
+  ##############################################################################
+
+  - label: ":bazel: Build (Linux)"
+    key: build-linux
+    plugins:
+      - docker#v5.11.0:
+          image: "ubuntu:22.04"
+          volumes:
+            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+          environment:
+            - HOME=/root
+          always-pull: false
+    command: |
+      apt-get update -qq && apt-get install -y curl python3 git build-essential > /dev/null
+      ARCH=$$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+      curl -fsSL -o /usr/local/bin/bazel \
+        https://github.com/bazelbuild/bazelisk/releases/download/v1.20.0/bazelisk-linux-$${ARCH}
+      chmod +x /usr/local/bin/bazel
+      bazel build --config=ci //...
+
+  - label: ":apple: Build (macOS)"
+    key: build-macos
+    agents:
+      os: macos
+    command: bazel build --config=ci //...
+
+  ##############################################################################
+  # TEST PHASE — parallel per platform
+  ##############################################################################
+
+  - label: ":bazel: Test (Linux)"
+    key: test-linux
+    depends_on: build-linux
+    plugins:
+      - docker#v5.11.0:
+          image: "ubuntu:22.04"
+          volumes:
+            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+          environment:
+            - HOME=/root
+    command: |
+      apt-get update -qq && apt-get install -y curl python3 git build-essential > /dev/null
+      ARCH=$$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+      curl -fsSL -o /usr/local/bin/bazel \
+        https://github.com/bazelbuild/bazelisk/releases/download/v1.20.0/bazelisk-linux-$${ARCH}
+      chmod +x /usr/local/bin/bazel
+      bazel test --config=ci //...
+
+  - label: ":apple: Test (macOS)"
+    key: test-macos
+    depends_on: build-macos
+    agents:
+      os: macos
+    command: bazel test --config=ci //...
+
+  ##############################################################################
+  # EXECUTION TESTS — binary execution tests
+  ##############################################################################
+
+  - label: ":go: Go exec via Bazel (Linux)"
+    depends_on: test-linux
+    plugins:
+      - docker#v5.11.0:
+          image: "ubuntu:22.04"
+          volumes:
+            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+          environment:
+            - HOME=/root
+    command: |
+      apt-get update -qq && apt-get install -y curl python3 git build-essential > /dev/null
+      ARCH=$$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+      curl -fsSL -o /usr/local/bin/bazel \
+        https://github.com/bazelbuild/bazelisk/releases/download/v1.20.0/bazelisk-linux-$${ARCH}
+      chmod +x /usr/local/bin/bazel
+      bazel run --config=ci //golang/cmd/brackets
+
+  - label: ":go: Go exec via Make (Linux)"
+    depends_on: test-linux
+    plugins:
+      - docker#v5.11.0:
+          image: "golang:1.25-bookworm"
+          volumes:
+            - "/tmp/bk-go-cache:/go/pkg/mod"
+          environment:
+            - GOPATH=/go
+    command: |
+      apt-get update -qq && apt-get install -y protobuf-compiler git make > /dev/null
+      go install github.com/golang/protobuf/protoc-gen-go@latest
+      go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+      export PATH="$$PATH:$$(go env GOPATH)/bin"
+      make go-test
+      make go-run
+
+  - label: ":kotlin: Kotlin integration test (Linux)"
+    depends_on: test-linux
+    plugins:
+      - docker#v5.11.0:
+          image: "ubuntu:22.04"
+          volumes:
+            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+          environment:
+            - HOME=/root
+    command: .buildkite/scripts/kotlin-integration-test.sh
+
+  - label: ":go: Go exec via Bazel (macOS)"
+    depends_on: test-macos
+    agents:
+      os: macos
+    command: bazel run --config=ci //golang/cmd/brackets
+
+  - label: ":apple: :kotlin: Kotlin integration test (macOS)"
+    depends_on: test-macos
+    agents:
+      os: macos
+    command: .buildkite/scripts/kotlin-integration-test.sh
