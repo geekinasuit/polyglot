@@ -1,8 +1,10 @@
 ---
 date: 2026-03-05
-status: open
+status: done
 priority: low
 area: kotlin, bazel, grpc
+github: https://github.com/geekinasuit/polyglot/issues/15
+plan: thoughts/shared/plans/2026-03-07-grpc-kotlin-bzlmod-migration.md
 ---
 
 # Future: Migrate grpc_kotlin to bzlmod-native version when available
