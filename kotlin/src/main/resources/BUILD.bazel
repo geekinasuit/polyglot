@@ -1,13 +1,19 @@
 java_library(
     name = "service_resources",
-    resources = ["service/application.yml"],
+    resources = [
+        "logback.xml",
+        "service/application.yml",
+    ],
     resource_strip_prefix = "kotlin/src/main/resources",
     visibility = ["//visibility:public"],
 )
 
 java_library(
     name = "client_resources",
-    resources = ["client/application.yml"],
+    resources = [
+        "logback.xml",
+        "client/application.yml",
+    ],
     resource_strip_prefix = "kotlin/src/main/resources",
     visibility = ["//visibility:public"],
 )
