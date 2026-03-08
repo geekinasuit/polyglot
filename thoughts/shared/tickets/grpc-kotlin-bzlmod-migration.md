@@ -1,6 +1,6 @@
 ---
 date: 2026-03-05
-status: planned
+status: done
 priority: low
 area: kotlin, bazel, grpc
 github: https://github.com/geekinasuit/polyglot/issues/15

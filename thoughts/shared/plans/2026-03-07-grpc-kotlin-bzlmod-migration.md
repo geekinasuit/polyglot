@@ -96,13 +96,24 @@ bazel test //kotlin/...
 
 Both must pass cleanly with no WORKSPACE-related warnings or errors.
 
+## Implementation Note
+
+During implementation, removing `use_repo(..., "grpc_kotlin_maven")` caused the build to fail
+with `No repository visible as '@grpc_kotlin_maven' from main repository`. The fix was to keep
+`"grpc_kotlin_maven"` in the `use_repo` call — this exposes the repo created by grpc_kotlin's
+internal BCR maven extension to our module via the shared `rules_jvm_external` extension. This
+pattern is confirmed by grpc-kotlin's own bzlmod example (`bzl-examples/bzlmod/MODULE.bazel`).
+
+The `com_google_guava_guava` entry and the guava/kotlinpoet maven artifacts were pure WORKSPACE-era
+overhead and are now cleanly removed.
+
 ## Success Criteria
 
 ### Automated Verification
-- [ ] `bazel build //kotlin/...` succeeds with no errors
-- [ ] `bazel test //kotlin/...` passes
-- [ ] No `--enable_workspace` warnings in build output
-- [ ] All other language targets still build: `bazel build //...`
+- [x] `bazel build //kotlin/...` succeeds with no errors
+- [x] `bazel test //kotlin/...` passes
+- [x] No `--enable_workspace` warnings in build output
+- [x] All other language targets still build: `bazel build //...`
 
 ### Manual Verification
 - [ ] Start the Kotlin gRPC service and connect with the client; confirm balanced/
