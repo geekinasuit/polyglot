@@ -52,6 +52,8 @@ maven.install(
         "io.grpc:grpc-netty-shaded:1.71.0",
         "com.linecorp.armeria:armeria-grpc:1.26.4",
         "com.linecorp.armeria:armeria:1.26.4",
+        "com.sksamuel.hoplite:hoplite-core:2.9.0",
+        "com.sksamuel.hoplite:hoplite-yaml:2.9.0",
         "org.slf4j:slf4j-api:2.0.11",
         "org.slf4j:slf4j-jdk14:2.0.11",
     ],
