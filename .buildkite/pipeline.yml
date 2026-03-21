@@ -30,7 +30,7 @@ steps:
       - docker#v5.11.0:
           image: "ubuntu:22.04"
           volumes:
-            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
           environment:
             - HOME=/root
           always-pull: false
@@ -59,7 +59,7 @@ steps:
       - docker#v5.11.0:
           image: "ubuntu:22.04"
           volumes:
-            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
           environment:
             - HOME=/root
     command: |
@@ -87,7 +87,7 @@ steps:
       - docker#v5.11.0:
           image: "ubuntu:22.04"
           volumes:
-            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
           environment:
             - HOME=/root
     command: |
@@ -104,7 +104,7 @@ steps:
       - docker#v5.11.0:
           image: "golang:1.25-bookworm"
           volumes:
-            - "/tmp/bk-go-cache:/go/pkg/mod"
+            - "/var/lib/buildkite-cache/go:/go/pkg/mod"
           environment:
             - GOPATH=/go
     command: |
@@ -121,7 +121,7 @@ steps:
       - docker#v5.11.0:
           image: "ubuntu:22.04"
           volumes:
-            - "/tmp/bk-bazel-cache:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
           environment:
             - HOME=/root
     command: .buildkite/scripts/kotlin-integration-test.sh
