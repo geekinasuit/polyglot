@@ -8,9 +8,12 @@ kt_jvm_library(
     deps = [
         "//kotlin:balance_grpc_gen",
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/telemetry:telemetry_lib",
         "@maven//:com_github_ajalt_clikt_clikt_jvm",
         "@maven//:io_github_oshai_kotlin_logging_jvm",
         "@maven//:io_grpc_grpc_netty_shaded",
+        "@maven//:io_grpc_grpc_opentelemetry",
+        "@maven//:io_opentelemetry_opentelemetry_api",
         "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm",
     ],
     runtime_deps = [

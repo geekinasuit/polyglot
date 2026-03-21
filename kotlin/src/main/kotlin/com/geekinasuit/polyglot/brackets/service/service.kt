@@ -3,6 +3,9 @@ package com.geekinasuit.polyglot.brackets.service
 import com.geekinasuit.polyglot.brackets.config.ConfigCommand
 import com.geekinasuit.polyglot.brackets.config.ServiceAppConfig
 import com.geekinasuit.polyglot.brackets.config.loadConfig
+import com.geekinasuit.polyglot.brackets.telemetry.initTelemetry
+import com.geekinasuit.polyglot.brackets.telemetry.merging
+import com.geekinasuit.polyglot.brackets.telemetry.span
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -12,6 +15,9 @@ import com.linecorp.armeria.server.grpc.GrpcService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.grpc.BindableService
 import io.grpc.ServerInterceptor
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.instrumentation.armeria.v1_3.ArmeriaServerTelemetry
+import io.opentelemetry.sdk.resources.Resource
 
 private val log = KotlinLogging.logger {}
 
@@ -35,16 +41,55 @@ class BracketsService : ConfigCommand<ServiceAppConfig>("brackets_service") {
     assertAllOptionsAreBound()
     val config = resolveConfig(loadConfig("/service/application.yml"))
 
+    val resource = Resource.getDefault().merging {
+      put("service.name", "brackets-service")
+      put("deployment.environment", config.service.environment)
+      put("service.instance.id", config.service.instanceId)
+    }
+    initTelemetry(resource, config.telemetry)
+
     log.info {
       "brackets service starting: host=${config.service.host} port=${config.service.port} " +
         "environment=${config.service.environment} instanceId=${config.service.instanceId} " +
         "otlpEndpoint=${config.telemetry.otlpEndpoint ?: "(disabled)"}"
     }
 
-    val server =
-      Server.builder().http(config.service.port).service(wrapService(BalanceServiceEndpoint())).build()
-    server.closeOnJvmShutdown().thenRun { log.info { "Server has been stopped." } }
-    server.start().join()
+    val otel = GlobalOpenTelemetry.get()
+    val tracer = otel.getTracer("brackets-service")
+    val startupSpan = tracer.span("server.startup")
+    val startupScope = startupSpan.makeCurrent()
+
+    try {
+      val server =
+        Server.builder()
+          .http(config.service.port)
+          .decorator(ArmeriaServerTelemetry.create(otel).newDecorator())
+          .service(wrapService(BalanceServiceEndpoint()))
+          .serverListener(
+            object : com.linecorp.armeria.server.ServerListenerAdapter() {
+              override fun serverStarted(server: Server) {
+                log.info { "Server started: activePorts=${server.activePorts()}" }
+                startupScope.close()
+                startupSpan.end()
+              }
+
+              override fun serverStopping(server: Server) {
+                log.info { "Server stopping: graceful drain started" }
+              }
+
+              override fun serverStopped(server: Server) {
+                log.info { "Server stopped." }
+              }
+            }
+          )
+          .build()
+      server.closeOnJvmShutdown()
+      server.start().join()
+    } catch (e: Exception) {
+      startupScope.close()
+      startupSpan.end()
+      throw e
+    }
   }
 }
 

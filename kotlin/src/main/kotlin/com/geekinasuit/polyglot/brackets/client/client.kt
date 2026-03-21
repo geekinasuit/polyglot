@@ -5,6 +5,10 @@ import com.geekinasuit.polyglot.brackets.config.ConfigCommand
 import com.geekinasuit.polyglot.brackets.config.loadConfig
 import com.geekinasuit.polyglot.brackets.service.protos.BalanceBracketsGrpcKt
 import com.geekinasuit.polyglot.brackets.service.protos.BalanceRequest
+import com.geekinasuit.polyglot.brackets.telemetry.attributes
+import com.geekinasuit.polyglot.brackets.telemetry.counter
+import com.geekinasuit.polyglot.brackets.telemetry.initTelemetry
+import com.geekinasuit.polyglot.brackets.telemetry.merging
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -14,6 +18,8 @@ import com.github.ajalt.clikt.parameters.types.inputStream
 import com.github.ajalt.clikt.parameters.types.int
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.grpc.ManagedChannelBuilder
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.sdk.resources.Resource
 import java.io.BufferedReader
 import kotlinx.coroutines.runBlocking
 
@@ -40,14 +46,28 @@ class BracketsClient : ConfigCommand<ClientAppConfig>("brackets_client") {
     assertAllOptionsAreBound()
     val config = resolveConfig(loadConfig("/client/application.yml"))
 
+    val resource = Resource.getDefault().merging {
+      put("service.name", "brackets-client")
+      put("deployment.environment", config.client.environment)
+      put("service.instance.id", config.client.instanceId)
+    }
+    val grpcOtel = initTelemetry(resource, config.telemetry)
+
     log.info {
       "brackets client starting: target=${config.client.host}:${config.client.port} " +
         "environment=${config.client.environment} instanceId=${config.client.instanceId} " +
         "otlpEndpoint=${config.telemetry.otlpEndpoint ?: "(disabled)"}"
     }
 
+    val callCounter = GlobalOpenTelemetry.get().getMeter("brackets-client")
+      .counter("brackets.client.call.count") {
+        setDescription("Number of bracket balance calls made by the client")
+      }
+
     val buffer = text.bufferedReader().use(BufferedReader::readText)
     text.close()
+
+    log.info { "Sending statement: length=${buffer.length}" }
 
     println("About to check:\n========")
     println(buffer)
@@ -56,18 +76,25 @@ class BracketsClient : ConfigCommand<ClientAppConfig>("brackets_client") {
     val channel =
       ManagedChannelBuilder.forAddress(config.client.host, config.client.port)
         .usePlaintext()
+        .also(grpcOtel::configureChannelBuilder)
         .build()
     val stub = BalanceBracketsGrpcKt.BalanceBracketsCoroutineStub(channel)
     val request = BalanceRequest.newBuilder().setStatement(buffer).build()
+
     val response =
       try {
         stub.balance(request)
       } catch (e: Exception) {
+        callCounter.add(1, attributes { put("result", "connection_error") })
         System.err.println(
           "Error connecting to bracket balance service: ${e.cause?.message ?: e.message}"
         )
         throw ProgramResult(1)
       }
+
+    val result = if (response.succeeded) if (response.isBalanced) "balanced" else "not_balanced" else "error"
+    callCounter.add(1, attributes { put("result", result) })
+
     log.info { "Response: succeeded=${response.succeeded} isBalanced=${response.isBalanced}" }
     when {
       !response.succeeded -> {
