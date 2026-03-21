@@ -5,15 +5,19 @@ kt_jvm_library(
     name = "service_lib",
     srcs = glob(["*.kt"]),
     visibility = ["//visibility:public"],
-    runtime_deps = ["@maven//:org_slf4j_slf4j_jdk14"],
     deps = [
         "//kotlin:balance_grpc_gen",
         "//kotlin/src/main/kotlin/bracketskt",
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
         "@grpc-java//stub",
         "@maven//:com_github_ajalt_clikt_clikt_jvm",
         "@maven//:com_linecorp_armeria_armeria",
         "@maven//:com_linecorp_armeria_armeria_grpc",
         "@maven//:io_github_oshai_kotlin_logging_jvm",
         "@maven//:io_grpc_grpc_api",
+    ],
+    runtime_deps = [
+        "@maven//:org_slf4j_slf4j_jdk14",
+        "//kotlin/src/main/resources:service_resources",
     ],
 )

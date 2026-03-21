@@ -1,0 +1,12 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "config_lib",
+    srcs = glob(["*.kt"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:com_github_ajalt_clikt_clikt_jvm",
+        "@maven//:com_sksamuel_hoplite_hoplite_core",
+        "@maven//:com_sksamuel_hoplite_hoplite_yaml",
+    ],
+)

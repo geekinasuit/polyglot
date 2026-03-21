@@ -1,0 +1,13 @@
+java_library(
+    name = "service_resources",
+    resources = ["service/application.yml"],
+    resource_strip_prefix = "kotlin/src/main/resources",
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "client_resources",
+    resources = ["client/application.yml"],
+    resource_strip_prefix = "kotlin/src/main/resources",
+    visibility = ["//visibility:public"],
+)

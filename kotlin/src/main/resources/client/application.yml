@@ -1,0 +1,10 @@
+client:
+  host: localhost
+  port: 8888
+
+telemetry:
+  metrics-export-interval-seconds: 60
+  tracing-enabled: true
+  metrics-enabled: true
+  logging-export-enabled: false
+  # otlp-endpoint and log-endpoint are absent by default (null = no OTLP export)
