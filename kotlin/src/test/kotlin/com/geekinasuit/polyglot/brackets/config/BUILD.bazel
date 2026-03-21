@@ -1,0 +1,12 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "TelemetryConfigTest",
+    srcs = glob(["*.kt"]),
+    test_class = "com.geekinasuit.polyglot.brackets.config.TelemetryConfigTest",
+    deps = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
+        "@maven//:com_google_truth_truth",
+        "@maven//:junit_junit",
+    ],
+)
