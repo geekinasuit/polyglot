@@ -18,6 +18,7 @@ import io.grpc.ServerInterceptor
 import io.opentelemetry.api.GlobalOpenTelemetry
 import io.opentelemetry.instrumentation.armeria.v1_3.ArmeriaServerTelemetry
 import io.opentelemetry.sdk.resources.Resource
+import java.net.InetSocketAddress
 
 private val log = KotlinLogging.logger {}
 
@@ -62,7 +63,7 @@ class BracketsService : ConfigCommand<ServiceAppConfig>("brackets_service") {
     try {
       val server =
         Server.builder()
-          .http(config.service.port)
+          .http(InetSocketAddress(config.service.host, config.service.port))
           .decorator(ArmeriaServerTelemetry.create(otel).newDecorator())
           .service(wrapService(BalanceServiceEndpoint()))
           .serverListener(
