@@ -31,8 +31,8 @@ steps:
           image: "local/ci-agent:latest"
           always-pull: false
           volumes:
-            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
-            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
+            - "/tmp/bazel:/tmp/bazel-disk-cache"
+            - "/tmp/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel build --config=ci //...
@@ -55,8 +55,8 @@ steps:
           image: "local/ci-agent:latest"
           always-pull: false
           volumes:
-            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
-            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
+            - "/tmp/bazel:/tmp/bazel-disk-cache"
+            - "/tmp/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel test --config=ci //...
@@ -79,8 +79,8 @@ steps:
           image: "local/ci-agent:latest"
           always-pull: false
           volumes:
-            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
-            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
+            - "/tmp/bazel:/tmp/bazel-disk-cache"
+            - "/tmp/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel run --config=ci //golang/cmd/brackets
@@ -92,7 +92,7 @@ steps:
           image: "local/ci-agent:latest"
           always-pull: false
           volumes:
-            - "/var/lib/buildkite-cache/go:/go/pkg/mod"
+            - "/tmp/go:/go/pkg/mod"
           environment:
             - GOPATH=/go
     command: |
@@ -107,8 +107,8 @@ steps:
           image: "local/ci-agent:latest"
           always-pull: false
           volumes:
-            - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
-            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
+            - "/tmp/bazel:/tmp/bazel-disk-cache"
+            - "/tmp/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: .buildkite/scripts/kotlin-integration-test.sh
