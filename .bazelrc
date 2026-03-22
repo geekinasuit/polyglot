@@ -5,5 +5,3 @@ common --java_runtime_version=21
 build:ci --spawn_strategy=sandboxed
 build:ci --disk_cache=/tmp/bazel-disk-cache
 
-# Polyglot repo-specific configuration
-build:ci --repository_cache=~/.cache/bazel/_bazel_root/cache/repos/v1
