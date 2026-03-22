@@ -32,6 +32,7 @@ steps:
           always-pull: false
           volumes:
             - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel build --config=ci //...
@@ -55,6 +56,7 @@ steps:
           always-pull: false
           volumes:
             - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel test --config=ci //...
@@ -78,6 +80,7 @@ steps:
           always-pull: false
           volumes:
             - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: bazel run --config=ci //golang/cmd/brackets
@@ -105,6 +108,7 @@ steps:
           always-pull: false
           volumes:
             - "/var/lib/buildkite-cache/bazel:/tmp/bazel-disk-cache"
+            - "/var/lib/buildkite-cache/bazel-repo:/root/.cache/bazel"
           environment:
             - HOME=/root
     command: .buildkite/scripts/kotlin-integration-test.sh
