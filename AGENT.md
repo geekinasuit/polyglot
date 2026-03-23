@@ -205,7 +205,9 @@ This repository is backed by GitHub and uses **jj (Jujutsu)** as the preferred V
 - With jj: create a bookmark (`jj bookmark create <name>`), push it, open a PR via `gh pr create`
 - With git: create a branch, push it, open a PR via `gh pr create`
 
-**All PRs must be reviewed and merged by a human.** This applies even when the PR was authored entirely by an agent acting under the user's GitHub account. An agent must not merge its own PRs — it may open them, describe them, and request review, but the merge action requires explicit human approval.
+**All PRs must be reviewed and merged by a human** unless the user explicitly grants the agent permission to merge a specific PR. An agent must not merge its own PRs without that explicit, one-time grant — it may open them, describe them, and request review, but the merge action otherwise requires human action.
+
+**Never use `--admin` or any other CI bypass flag** when merging. If checks are failing, stop and report to the user — describe which checks passed and which failed, and ask whether to proceed. If the user explicitly grants permission for that specific PR, the agent may then execute the merge (with or without the bypass flag, as the user directs). That permission is one-time-only and does not carry over to subsequent PRs.
 
 ---
 
