@@ -4,3 +4,4 @@ common --java_runtime_version=21
 # All Buildkite pipeline steps pass --config=ci.
 build:ci --spawn_strategy=sandboxed
 build:ci --disk_cache=/tmp/bazel-disk-cache
+
