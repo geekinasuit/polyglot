@@ -39,72 +39,88 @@ import io.opentelemetry.sdk.trace.export.SpanExporter
 
 /** Creates [Attributes] with [block] configuring the [AttributesBuilder]. */
 fun attributes(block: AttributesBuilder.() -> Unit): Attributes =
-  Attributes.builder().apply(block).build()
+    Attributes.builder().apply(block).build()
 
 /** Creates a [Resource] with [block] configuring its [AttributesBuilder]. */
-fun resource(block: AttributesBuilder.() -> Unit): Resource =
-  Resource.create(attributes(block))
+fun resource(block: AttributesBuilder.() -> Unit): Resource = Resource.create(attributes(block))
 
 /** Merges additional attributes into this [Resource], configured by [block]. */
-fun Resource.merging(block: AttributesBuilder.() -> Unit): Resource =
-  merge(resource(block))
+fun Resource.merging(block: AttributesBuilder.() -> Unit): Resource = merge(resource(block))
 
 // ── SDK providers ────────────────────────────────────────────────────────────
 
-/** Builds an [OpenTelemetrySdk] and registers it as the global, with [block] configuring the builder. */
+/**
+ * Builds an [OpenTelemetrySdk] and registers it as the global, with [block] configuring the
+ * builder.
+ */
 fun openTelemetrySdk(block: OpenTelemetrySdkBuilder.() -> Unit): OpenTelemetrySdk =
-  OpenTelemetrySdk.builder().apply(block).buildAndRegisterGlobal()
+    OpenTelemetrySdk.builder().apply(block).buildAndRegisterGlobal()
 
 /** Builds an [SdkTracerProvider] with [block] configuring the [SdkTracerProviderBuilder]. */
 fun sdkTracerProvider(block: SdkTracerProviderBuilder.() -> Unit): SdkTracerProvider =
-  SdkTracerProvider.builder().apply(block).build()
+    SdkTracerProvider.builder().apply(block).build()
 
 /** Builds an [SdkMeterProvider] with [block] configuring the [SdkMeterProviderBuilder]. */
 fun sdkMeterProvider(block: SdkMeterProviderBuilder.() -> Unit): SdkMeterProvider =
-  SdkMeterProvider.builder().apply(block).build()
+    SdkMeterProvider.builder().apply(block).build()
 
 /** Builds an [SdkLoggerProvider] with [block] configuring the [SdkLoggerProviderBuilder]. */
 fun sdkLoggerProvider(block: SdkLoggerProviderBuilder.() -> Unit): SdkLoggerProvider =
-  SdkLoggerProvider.builder().apply(block).build()
+    SdkLoggerProvider.builder().apply(block).build()
 
 // ── Exporters ────────────────────────────────────────────────────────────────
 
 /** Builds an [OtlpGrpcSpanExporter] with [block] configuring the builder. */
 fun otlpSpanExporter(block: OtlpGrpcSpanExporterBuilder.() -> Unit): OtlpGrpcSpanExporter =
-  OtlpGrpcSpanExporter.builder().apply(block).build()
+    OtlpGrpcSpanExporter.builder().apply(block).build()
 
 /** Builds an [OtlpGrpcMetricExporter] with [block] configuring the builder. */
 fun otlpMetricExporter(block: OtlpGrpcMetricExporterBuilder.() -> Unit): OtlpGrpcMetricExporter =
-  OtlpGrpcMetricExporter.builder().apply(block).build()
+    OtlpGrpcMetricExporter.builder().apply(block).build()
 
 /** Builds an [OtlpGrpcLogRecordExporter] with [block] configuring the builder. */
 fun otlpLogExporter(block: OtlpGrpcLogRecordExporterBuilder.() -> Unit): OtlpGrpcLogRecordExporter =
-  OtlpGrpcLogRecordExporter.builder().apply(block).build()
+    OtlpGrpcLogRecordExporter.builder().apply(block).build()
 
 // ── Processors / readers ─────────────────────────────────────────────────────
 
-/** Builds a [BatchSpanProcessor] for [exporter] with [block] configuring the [BatchSpanProcessorBuilder]. */
-fun batchSpanProcessor(exporter: SpanExporter, block: BatchSpanProcessorBuilder.() -> Unit = {}): BatchSpanProcessor =
-  BatchSpanProcessor.builder(exporter).apply(block).build()
+/**
+ * Builds a [BatchSpanProcessor] for [exporter] with [block] configuring the
+ * [BatchSpanProcessorBuilder].
+ */
+fun batchSpanProcessor(
+    exporter: SpanExporter,
+    block: BatchSpanProcessorBuilder.() -> Unit = {},
+): BatchSpanProcessor = BatchSpanProcessor.builder(exporter).apply(block).build()
 
-/** Builds a [PeriodicMetricReader] for [exporter] with [block] configuring the [PeriodicMetricReaderBuilder]. */
-fun periodicMetricReader(exporter: MetricExporter, block: PeriodicMetricReaderBuilder.() -> Unit = {}): PeriodicMetricReader =
-  PeriodicMetricReader.builder(exporter).apply(block).build()
+/**
+ * Builds a [PeriodicMetricReader] for [exporter] with [block] configuring the
+ * [PeriodicMetricReaderBuilder].
+ */
+fun periodicMetricReader(
+    exporter: MetricExporter,
+    block: PeriodicMetricReaderBuilder.() -> Unit = {},
+): PeriodicMetricReader = PeriodicMetricReader.builder(exporter).apply(block).build()
 
-/** Builds a [BatchLogRecordProcessor] for [exporter] with [block] configuring the [BatchLogRecordProcessorBuilder]. */
-fun batchLogRecordProcessor(exporter: LogRecordExporter, block: BatchLogRecordProcessorBuilder.() -> Unit = {}): BatchLogRecordProcessor =
-  BatchLogRecordProcessor.builder(exporter).apply(block).build()
+/**
+ * Builds a [BatchLogRecordProcessor] for [exporter] with [block] configuring the
+ * [BatchLogRecordProcessorBuilder].
+ */
+fun batchLogRecordProcessor(
+    exporter: LogRecordExporter,
+    block: BatchLogRecordProcessorBuilder.() -> Unit = {},
+): BatchLogRecordProcessor = BatchLogRecordProcessor.builder(exporter).apply(block).build()
 
 // ── Tracer / Meter ───────────────────────────────────────────────────────────
 
 /** Builds and starts a [Span] with [block] configuring the [SpanBuilder]. */
 fun Tracer.span(name: String, block: SpanBuilder.() -> Unit = {}): Span =
-  spanBuilder(name).apply(block).startSpan()
+    spanBuilder(name).apply(block).startSpan()
 
 /** Builds a [LongCounter] with [block] configuring the [LongCounterBuilder]. */
 fun Meter.counter(name: String, block: LongCounterBuilder.() -> Unit = {}): LongCounter =
-  counterBuilder(name).apply(block).build()
+    counterBuilder(name).apply(block).build()
 
 /** Builds a long-valued [LongHistogram] with [block] configuring the [LongHistogramBuilder]. */
 fun Meter.longHistogram(name: String, block: LongHistogramBuilder.() -> Unit = {}): LongHistogram =
-  histogramBuilder(name).ofLongs().apply(block).build()
+    histogramBuilder(name).ofLongs().apply(block).build()

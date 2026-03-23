@@ -4,12 +4,12 @@ import com.geekinasuit.polyglot.example.protos.Something
 import com.geekinasuit.polyglot.example.protos.something
 import kotlin.collections.ArrayDeque
 
-
-val closedParentheses = mapOf(
-  ')' to '(',
-  '}' to '{',
-  ']' to '[',
-)
+val closedParentheses =
+    mapOf(
+        ')' to '(',
+        '}' to '{',
+        ']' to '[',
+    )
 val openParentheses = closedParentheses.values.toSet()
 
 @Throws()
@@ -24,10 +24,15 @@ public fun balancedBrackets(text: String) {
       }
       in closedParentheses -> {
         val open = closedParentheses[c]
-        val last = stack.removeLastOrNull() ?:
-          throw BracketsNotBalancedException("closing bracket $c with no opening bracket at char ${i+1}")
+        val last =
+            stack.removeLastOrNull()
+                ?: throw BracketsNotBalancedException(
+                    "closing bracket $c with no opening bracket at char ${i+1}"
+                )
         if (last != open)
-          throw BracketsNotBalancedException("closing bracket ] at char ${i+1} mismatched with last opening bracket (")
+            throw BracketsNotBalancedException(
+                "closing bracket ] at char ${i+1} mismatched with last opening bracket ("
+            )
       }
     }
   }

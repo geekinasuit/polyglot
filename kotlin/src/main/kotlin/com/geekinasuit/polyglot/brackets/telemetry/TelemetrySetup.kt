@@ -16,8 +16,8 @@ import java.time.Duration
 private val log = KotlinLogging.logger {}
 
 fun initTelemetry(
-  resource: Resource,
-  config: TelemetryConfig,
+    resource: Resource,
+    config: TelemetryConfig,
 ): GrpcOpenTelemetry {
   val sdk = openTelemetrySdk {
     setTracerProvider(buildTracerProvider(resource, config))
@@ -30,36 +30,38 @@ fun initTelemetry(
 
   log.info {
     "OTel SDK initialized: otlpEndpoint=${config.otlpEndpoint ?: "(disabled)"} " +
-      "loggingExport=${config.loggingExportEnabled}"
+        "loggingExport=${config.loggingExportEnabled}"
   }
 
   return GrpcOpenTelemetry.newBuilder().sdk(sdk).build()
 }
 
 private fun buildTracerProvider(resource: Resource, config: TelemetryConfig): SdkTracerProvider =
-  sdkTracerProvider {
-    setResource(resource)
-    if (config.tracingEnabled && config.otlpEndpoint != null) {
-      addSpanProcessor(batchSpanProcessor(otlpSpanExporter { setEndpoint(config.otlpEndpoint) }))
+    sdkTracerProvider {
+      setResource(resource)
+      if (config.tracingEnabled && config.otlpEndpoint != null) {
+        addSpanProcessor(batchSpanProcessor(otlpSpanExporter { setEndpoint(config.otlpEndpoint) }))
+      }
     }
-  }
 
 private fun buildMeterProvider(resource: Resource, config: TelemetryConfig): SdkMeterProvider =
-  sdkMeterProvider {
-    setResource(resource)
-    if (config.metricsEnabled && config.otlpEndpoint != null) {
-      registerMetricReader(
-        periodicMetricReader(otlpMetricExporter { setEndpoint(config.otlpEndpoint) }) {
-          setInterval(Duration.ofSeconds(config.metricsExportIntervalSeconds))
-        }
-      )
+    sdkMeterProvider {
+      setResource(resource)
+      if (config.metricsEnabled && config.otlpEndpoint != null) {
+        registerMetricReader(
+            periodicMetricReader(otlpMetricExporter { setEndpoint(config.otlpEndpoint) }) {
+              setInterval(Duration.ofSeconds(config.metricsExportIntervalSeconds))
+            }
+        )
+      }
     }
-  }
 
 private fun buildLoggerProvider(resource: Resource, config: TelemetryConfig): SdkLoggerProvider =
-  sdkLoggerProvider {
-    setResource(resource)
-    if (config.loggingExportEnabled && config.effectiveLogEndpoint != null) {
-      addLogRecordProcessor(batchLogRecordProcessor(otlpLogExporter { setEndpoint(config.effectiveLogEndpoint) }))
+    sdkLoggerProvider {
+      setResource(resource)
+      if (config.loggingExportEnabled && config.effectiveLogEndpoint != null) {
+        addLogRecordProcessor(
+            batchLogRecordProcessor(otlpLogExporter { setEndpoint(config.effectiveLogEndpoint) })
+        )
+      }
     }
-  }
