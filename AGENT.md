@@ -144,6 +144,29 @@ Each language implementation should have equivalent test coverage. The Go and Ja
 
 ## Code Style Principles
 
+### Kotlin Formatting: ktfmt
+
+All Kotlin files in this repository are formatted with **`ktfmt`** (the Google/Meta formatter,
+default style). Before committing any Kotlin file changes:
+
+```
+ktfmt <changed-kotlin-files>
+```
+
+Or to format all Kotlin files at once:
+
+```
+ktfmt $(find kotlin -name "*.kt")
+```
+
+`ktfmt` must be installed (`brew install ktfmt` on macOS). A formatting-only commit is a valid,
+self-contained PR — it carries no behavioral changes and can be reviewed and merged independently.
+
+Do not mix formatting changes with behavioral changes in the same commit. If a file you are
+editing is not yet formatted, format it in a separate preceding commit.
+
+---
+
 ### Idiomatic First, Structurally Familiar Second
 
 Each language implementation should be **idiomatic for that language** — naming, package layout, error handling, and tooling should feel native to a practitioner of that language. Do not mechanically port Kotlin idioms.

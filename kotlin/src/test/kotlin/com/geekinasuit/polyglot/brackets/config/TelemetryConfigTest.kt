@@ -6,7 +6,8 @@ import org.junit.Test
 class TelemetryConfigTest {
   @Test
   fun `effectiveLogEndpoint returns logEndpoint when explicitly set`() {
-    val config = TelemetryConfig(otlpEndpoint = "http://otlp:4317", logEndpoint = "http://logs:4317")
+    val config =
+        TelemetryConfig(otlpEndpoint = "http://otlp:4317", logEndpoint = "http://logs:4317")
     assertThat(config.effectiveLogEndpoint).isEqualTo("http://logs:4317")
   }
 
