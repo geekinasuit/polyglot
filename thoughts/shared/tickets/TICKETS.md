@@ -20,11 +20,15 @@ Ticket files are the source of truth. GitHub Issues are a thin, work-time-only l
 
 | File | Priority | Area | Summary |
 |---|---|---|---|
+| `kotlin-docker-deployment.md` | medium | kotlin, docker, deployment | Docker container build for Kotlin service; staging + production profiles |
 | `github-action-ticket-close-sync.md` | medium | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `grpc-kotlin-bzlmod-migration.md` | low | kotlin, bazel | Migrate to bzlmod-native `grpc_kotlin` when upstream supports it |
 | `go-grpc-library-wrong-proto-target.md` | low | golang, bazel | `go_grpc_library` wraps wrong proto (`//protobuf` → should be `//protobuf:balance_rpc`) |
 | `python-proto-integration-incomplete.md` | low | python, protobuf | Proto import disabled; `foo()` returns `None` |
 | `kotlin-grpc-interceptors-not-implemented.md` | low | kotlin, grpc | `wrapService()` interceptor hook exists but no interceptors implemented |
+| `kotlin-dagger-grpc-di.md` | low | kotlin, grpc, di | Introduce Dagger 2 DI for the Kotlin service via dagger-grpc; plan: `2026-03-22-kotlin-dagger-grpc-di.md` |
+| `kotlin-dagger-client-di.md` | low | kotlin, grpc, di | Dagger DI for the gRPC client binary; prereq: server DI plan |
+| `cross-language-e2e-matrix.md` | low | testing, ci, grpc, multi-language | Matrix test for every (client lang) × (server lang) combination; prereq: all gRPC client+server tickets |
 | `go-grpc-client-server.md` | medium | golang, grpc | Implement gRPC service and client; prereq: proto target fix; model after Kotlin |
 | `java-grpc-client-server.md` | medium | java, grpc | Implement gRPC service and client; model after Kotlin |
 | `python-grpc-client-server.md` | medium | python, grpc | Implement gRPC service and client; prereq: proto fix; model after Kotlin |
