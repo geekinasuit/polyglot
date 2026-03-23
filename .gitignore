@@ -36,3 +36,7 @@ MODULE.bazel.lock
 
 target
 out
+
+# Override global gitignore exclusions for project-tracked directories
+!thoughts
+!AGENT.md
