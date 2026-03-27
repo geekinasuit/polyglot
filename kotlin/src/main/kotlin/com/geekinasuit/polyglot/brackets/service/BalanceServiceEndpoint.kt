@@ -2,6 +2,8 @@ package com.geekinasuit.polyglot.brackets.service
 
 import bracketskt.BracketsNotBalancedException
 import bracketskt.balancedBrackets
+import com.geekinasuit.daggergrpc.api.ApplicationScope
+import com.geekinasuit.daggergrpc.api.GrpcServiceHandler
 import com.geekinasuit.polyglot.brackets.service.protos.BalanceBracketsGrpc
 import com.geekinasuit.polyglot.brackets.service.protos.BalanceRequest
 import com.geekinasuit.polyglot.brackets.service.protos.BalanceResponse
@@ -10,21 +12,22 @@ import com.geekinasuit.polyglot.brackets.telemetry.counter
 import com.geekinasuit.polyglot.brackets.telemetry.longHistogram
 import com.geekinasuit.polyglot.brackets.telemetry.span
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.grpc.BindableService
-import io.grpc.ServerServiceDefinition
 import io.grpc.stub.StreamObserver
-import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.api.metrics.LongCounter
 import io.opentelemetry.api.metrics.LongHistogram
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.api.trace.Tracer
+import javax.inject.Inject
 
 private val log = KotlinLogging.logger {}
 
-class BalanceServiceEndpoint : BalanceBracketsGrpc.AsyncService, BindableService {
-  // TODO: make @Inject constructor params when Dagger DI ticket is implemented
-  private val tracer: Tracer = GlobalOpenTelemetry.get().getTracer("brackets-service")
-  private val meter = GlobalOpenTelemetry.get().getMeter("brackets-service")
+@GrpcServiceHandler(BalanceBracketsGrpc::class)
+@ApplicationScope
+class BalanceServiceEndpoint @Inject constructor(otel: OpenTelemetry) :
+    BalanceBracketsGrpc.AsyncService {
+  private val tracer: Tracer = otel.getTracer("brackets-service")
+  private val meter = otel.getMeter("brackets-service")
   private val requestCounter: LongCounter =
       meter.counter("brackets.server.request.count") {
         setDescription("Number of bracket balance requests")
@@ -74,6 +77,4 @@ class BalanceServiceEndpoint : BalanceBracketsGrpc.AsyncService, BindableService
       latencyHistogram.record(durationMs, attrs)
     }
   }
-
-  override fun bindService(): ServerServiceDefinition = BalanceBracketsGrpc.bindService(this)
 }

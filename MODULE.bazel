@@ -14,6 +14,12 @@ bazel_dep(name = "grpc", version = "1.74.1")
 bazel_dep(name = "protoc-gen-validate", version = "1.2.1.bcr.1")  # Account for a bug in 1.2.1
 bazel_dep(name = "grpc-java", version = "1.74.0")
 bazel_dep(name = "grpc_kotlin", version = "1.5.0")
+bazel_dep(name = "dagger-grpc", version = "0.1")
+git_override(
+    module_name = "dagger-grpc",
+    remote = "https://github.com/geekinasuit/dagger-grpc.git",
+    commit = "b5c6206366573f9ae2f654aa9ab090f11a75feda",
+)
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_work = "//:go.work")
@@ -63,6 +69,9 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk:1.47.0",
         "io.opentelemetry:opentelemetry-exporter-otlp:1.47.0",
         "io.grpc:grpc-opentelemetry:1.71.0",
+        "com.google.dagger:dagger:2.55",
+        "com.google.dagger:dagger-compiler:2.55",
+        "javax.inject:javax.inject:1",
     ],
     fetch_sources = True,
     generate_compat_repositories = True,

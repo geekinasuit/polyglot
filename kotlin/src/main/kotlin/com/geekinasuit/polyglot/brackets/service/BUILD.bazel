@@ -3,21 +3,30 @@ load("@grpc_kotlin//:kt_jvm_grpc.bzl", "kt_jvm_grpc_library", "kt_jvm_proto_libr
 
 kt_jvm_library(
     name = "service_lib",
-    srcs = glob(["*.kt"]),
+    srcs = glob(["*.kt", "dagger/*.kt"]),
+    plugins = [
+        "@dagger-grpc//io_grpc/compiler/ksp:plugin",
+        "@dagger-grpc//third_party/dagger:dagger-compiler",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//kotlin:balance_grpc_gen",
         "//kotlin/src/main/kotlin/bracketskt",
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/telemetry:telemetry_lib",
+        "@dagger-grpc//api",
+        "@dagger-grpc//util/armeria",
         "@grpc-java//stub",
         "@maven//:com_github_ajalt_clikt_clikt_jvm",
+        "@maven//:com_google_dagger_dagger",
         "@maven//:com_linecorp_armeria_armeria",
         "@maven//:com_linecorp_armeria_armeria_grpc",
         "@maven//:io_github_oshai_kotlin_logging_jvm",
         "@maven//:io_grpc_grpc_api",
+        "@maven//:io_grpc_grpc_opentelemetry",
         "@maven//:io_opentelemetry_opentelemetry_api",
         "@maven//:io_opentelemetry_instrumentation_opentelemetry_armeria_1_3",
+        "@maven//:javax_inject_javax_inject",
     ],
     runtime_deps = [
         "@maven//:ch_qos_logback_logback_classic",
