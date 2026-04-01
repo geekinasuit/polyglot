@@ -1,0 +1,28 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "ApplicationGraphTest",
+    srcs = glob(["*.kt"]),
+    associates = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/service:service_lib",
+    ],
+    plugins = [
+        "@dagger-grpc//third_party/dagger:dagger-compiler",
+    ],
+    test_class = "com.geekinasuit.polyglot.brackets.service.dagger.ApplicationGraphTest",
+    deps = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
+        "@dagger-grpc//api",
+        "@maven//:com_google_dagger_dagger",
+        "@maven//:com_google_truth_truth",
+        "@maven//:io_grpc_grpc_opentelemetry",
+        "@maven//:io_opentelemetry_opentelemetry_api",
+        "@maven//:io_opentelemetry_opentelemetry_sdk",
+        "@maven//:javax_inject_javax_inject",
+        "@maven//:junit_junit",
+    ],
+    runtime_deps = [
+        "@maven//:ch_qos_logback_logback_classic",
+        "//kotlin/src/main/resources:service_resources",
+    ],
+)
