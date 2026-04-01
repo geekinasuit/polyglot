@@ -39,4 +39,4 @@ out
 
 # Override global gitignore exclusions for project-tracked directories
 !thoughts
-!AGENT.md
+!AGENTS.md
