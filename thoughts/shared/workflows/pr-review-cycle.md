@@ -29,10 +29,26 @@ running them in parallel means the response agent sees an empty comment list.
 
 **Critique agent** (subagent_type: general-purpose):
 > "You are a code reviewer. Review PR #N at https://github.com/geekinasuit/polyglot/pull/N.
+>
+> **Step 0 — Scope check (do this first, before any inline review):**
+> Compare the PR title and description against the actual diff (`gh pr diff <N>`).
+> Check whether the diff contains changes that are NOT described — files modified, added, or
+> deleted that have no relationship to the stated purpose of the PR. This can happen when a
+> branch is based on another in-flight branch and a squash merge captures ancestor changes
+> unintentionally. If you find out-of-scope changes, post a single top-level PR comment
+> (not an inline comment) flagging the discrepancy and listing the unexpected files/hunks.
+> **Stop and report 'SCOPE MISMATCH' to the caller** — do not proceed with inline review
+> until the scope issue is resolved.
+>
+> **Step 1 — Inline review (only if scope check passes):**
 > Read every changed file. Post inline review comments on GitHub for any real issues (bugs,
 > security, correctness, style violations, misleading names). Do NOT post praise or nitpicks.
 > Use `gh api` to post comments. If there are no issues, output 'LGTM - no issues found' and
 > do nothing."
+
+If the critique agent reports **SCOPE MISMATCH**, stop. Notify the PR author to rebase or
+re-target the branch so the diff matches the stated purpose, then re-run from Step 3 once
+the scope is corrected. Do not proceed with the response agent until the scope check passes.
 
 If the critique agent reports LGTM, skip to Step 8.
 
