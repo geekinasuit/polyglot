@@ -92,10 +92,35 @@ gh pr merge <N> --repo geekinasuit/polyglot --squash --auto
 ```
 
 > **IMPORTANT — CI failures before merge**: If any check is failing, **stop and report to the
-> user** — do NOT use `--admin` or any other bypass flag. Describe which checks passed and which
-> failed, and ask explicitly whether to proceed. The user must grant permission for each specific
-> PR individually before any bypass is used. Permission granted for one PR does NOT carry over
-> to the next.
+> user regardless of any merge permission already granted**. Permission to merge (i.e. permission
+> to proceed without further human review) is NOT permission to merge through failing CI.
+>
+> **Exception — purely textual, non-load-bearing PRs**: A PR may be merged through *infra*
+> CI failures if and only if *every* changed file meets all of these criteria:
+> 1. It has a purely prose file extension (`.md`, `.txt`) **or** is a well-known prose file
+>    by name/path (e.g. files under `thoughts/`, `AGENTS.md`, `README`, `LICENSE`). A file
+>    under `thoughts/` that has a non-prose extension (e.g. `.sh`, `.yaml`) does **not**
+>    qualify on path alone.
+> 2. It is **not** referenced by any Bazel target (not test data, not website source, not
+>    generated into any build output)
+> 3. It is **not** a CI/build config file (`.github/`, `.buildkite/`, `.bazelrc`, `MODULE.bazel`,
+>    `BUILD.bazel`, `*.bzl`, `Makefile`, etc.)
+>
+> When this exception applies, **infra failures only** may be treated as non-blocking. Still
+> classify the failure (infra vs. real) and note it in your report to the user. Real
+> build/test failures (e.g. a markdown-lint or link-checker step actually failing on changed
+> content) are blockers even for textual PRs and must be reported and addressed.
+>
+> For all other PRs, every failing check is a blocker until the user explicitly addresses it:
+>
+> - **Infra failures** (e.g. Docker image not found, agent offline): report to the user so they
+>   can investigate and mitigate — do not merge until they confirm the infra issue is understood
+>   and accepted for this specific PR.
+> - **Actual build/test failures**: must be diagnosed and fixed before merging.
+>
+> Describe which checks passed and which failed, classify each failure as infra vs. real, and
+> ask the user how to proceed. Do not use `--admin` or any other bypass flag without explicit
+> one-time permission for that specific PR.
 
 ### 9. Fetch and rebase after every merge
 
