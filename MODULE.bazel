@@ -18,7 +18,7 @@ bazel_dep(name = "dagger-grpc", version = "0.1")
 git_override(
     module_name = "dagger-grpc",
     remote = "https://github.com/geekinasuit/dagger-grpc.git",
-    commit = "b5c6206366573f9ae2f654aa9ab090f11a75feda",
+    commit = "728888940ff6f3dec88674230d633739ccc4bd97",
 )
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
