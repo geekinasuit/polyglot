@@ -29,9 +29,13 @@ The compressed format uses `§SECTION` markers and an `§ABBREV` table at the to
 Never pass non-trivial text inline to any shell command or tool call. Characters such as backticks, `---`, and `*` are misinterpreted by shell argument parsers and security hooks even when the content is benign.
 
 Always write content to a file first, then reference it by path:
-- `gh pr create/edit` body: Write tool to a temp file (e.g. `/tmp/pr-body.md`), then `--body-file /tmp/pr-body.md`
-- `gh api` comment body: Write tool to a temp file (e.g. `/tmp/comment.txt`), then `-F body=@/tmp/comment.txt`
-- Agent subagent prompts: Write tool to a temp file (e.g. `/tmp/prompt.md`), then in the Agent prompt say "Read your instructions from /tmp/prompt.md and execute them"
+- `gh pr create/edit` body: write to a temp file, then `--body-file /tmp/...`
+- `gh api` comment body: write to a temp file, then `-F body=@/tmp/...`
+- Agent subagent prompts: write to a temp file, then in the Agent prompt say "Read your instructions from /tmp/... and execute them"
+
+**Use unique temp file names** to avoid collisions with other agents running concurrently. Include repo name and purpose (e.g. `/tmp/polyglot-pr-body-32.md`, `/tmp/polyglot-prompt-kt002.md`). Generic names like `/tmp/pr-body.md` will collide.
+
+**Use `cat >` via Bash (not the Write tool) for temp files.** The Write tool requires reading a file before overwriting it if it already exists — a leftover file from a prior agent causes an explicit error that can be missed, leaving stale content in place. `cat >` always overwrites unconditionally.
 
 ---
 

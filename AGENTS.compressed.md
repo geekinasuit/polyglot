@@ -19,9 +19,11 @@ compressed uses §SECTION markers + §ABBREV table at top
 never pass non-trivial text inline to any shell command|tool call
 (backticks,---,* misinterpreted by shell parsers and security hooks)
 always write to file first, then reference by path:
-  gh pr create/edit body → Write tool to /tmp/pr-body.md → --body-file /tmp/pr-body.md
-  gh api comment body → Write tool to /tmp/comment.txt → -F body=@/tmp/comment.txt
-  agent subagent prompts → Write tool to /tmp/prompt.md → Agent prompt: "Read instructions from /tmp/prompt.md"
+  gh pr create/edit body → /tmp/... → --body-file /tmp/...
+  gh api comment body → /tmp/... → -F body=@/tmp/...
+  agent subagent prompts → /tmp/... → Agent prompt: "Read instructions from /tmp/..."
+unique tmp names: include repo+purpose+context (e.g. /tmp/polyglot-pr-body-32.md); never /tmp/pr-body.md — collides across agents
+use cat > (Bash) not Write tool for tmp files: Write errors if file exists without prior read; error can be missed→stale content used
 
 §LAYOUT
 $ts/research/   read before implementing
