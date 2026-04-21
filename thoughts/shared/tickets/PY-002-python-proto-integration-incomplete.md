@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: low
+id: PY-002
+title: Python proto integration not wired up
 area: python, protobuf
+status: open
+created: 2026-03-05
 ---
 
 # Incomplete: Python proto integration not wired up

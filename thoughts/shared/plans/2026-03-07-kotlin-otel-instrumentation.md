@@ -9,7 +9,7 @@ identification, and environment labeling — all using OTel semantic conventions
 Trace Context propagation.
 
 DI wiring (Dagger) is explicitly out of scope and tracked separately in
-`thoughts/shared/tickets/kotlin-dagger-grpc-di.md`.
+`thoughts/shared/tickets/KT-002-kotlin-dagger-grpc-di.md`.
 
 ## Current State Analysis
 
@@ -60,7 +60,7 @@ structured logs with `trace_id` correlating to the visible trace.
 
 ## What We Are NOT Doing
 
-- No DI framework (Dagger) in this plan — see `thoughts/shared/tickets/kotlin-dagger-grpc-di.md`.
+- No DI framework (Dagger) in this plan — see `thoughts/shared/tickets/KT-002-kotlin-dagger-grpc-di.md`.
 - No instrumentation of other languages (Go, Java, Python, Rust).
 - No distributed context propagation beyond the single client→server hop.
 - No OTel sampling configuration — always-on sampling is appropriate at this scale.
@@ -510,7 +510,7 @@ this file as a resource.
 ### Out of scope: cross-language e2e matrix
 
 A scheduled test running all combinations of `(language X client) → (language Y service)`
-is tracked separately in `thoughts/shared/tickets/cross-language-e2e-matrix.md`. It is
+is tracked separately in `thoughts/shared/tickets/CI-002-cross-language-e2e-matrix.md`. It is
 intentionally excluded from CI (too expensive per-PR) and will run on a schedule once
 multiple languages have full gRPC client/server implementations.
 
@@ -575,8 +575,8 @@ multiple languages have full gRPC client/server implementations.
 
 ## References
 
-- Ticket (DI follow-up): `thoughts/shared/tickets/kotlin-dagger-grpc-di.md`
-- Ticket (interceptors): `thoughts/shared/tickets/kotlin-grpc-interceptors-not-implemented.md`
+- Ticket (DI follow-up): `thoughts/shared/tickets/KT-002-kotlin-dagger-grpc-di.md`
+- Ticket (interceptors): `thoughts/shared/tickets/KT-001-kotlin-grpc-interceptors-not-implemented.md`
 - Codebase overview: `thoughts/shared/research/2026-03-05-polyglot-codebase-overview.compressed.md`
 - OTel gRPC Java: https://grpc.io/docs/languages/java/opentelemetry/
 - W3C Trace Context: https://www.w3.org/TR/trace-context/

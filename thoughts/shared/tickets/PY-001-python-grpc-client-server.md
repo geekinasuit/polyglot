@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: medium
+id: PY-001
+title: Implement Python gRPC client and server
 area: python, grpc
+status: open
+created: 2026-03-05
 ---
 
 # Feature: Implement Python gRPC client and server
@@ -14,7 +15,7 @@ Bring the Python implementation up to parity with Kotlin by implementing a gRPC 
 ## Current State
 
 - Core algorithm (`brackets_lib.py`) and tests are complete
-- `py_proto_library` for `example.proto` exists but the import is disabled (see `thoughts/shared/tickets/python-proto-integration-incomplete.md`)
+- `py_proto_library` for `example.proto` exists but the import is disabled (see `thoughts/shared/tickets/PY-002-python-proto-integration-incomplete.md`)
 - No gRPC service proto wired up; no server or client code exists
 
 ## Goals
@@ -32,4 +33,4 @@ Bring the Python implementation up to parity with Kotlin by implementing a gRPC 
 - `python/brackets_py_lib/BUILD.bazel` — existing Python build targets
 - `protobuf/brackets_service.proto` — service definition
 - `kotlin/` — reference implementation for both gRPC design and Bazel structure
-- `thoughts/shared/tickets/python-proto-integration-incomplete.md` — prerequisite
+- `thoughts/shared/tickets/PY-002-python-proto-integration-incomplete.md` — prerequisite

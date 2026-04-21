@@ -1,8 +1,9 @@
 ---
-date: 2026-03-08
-status: open
-priority: low
+id: CI-002
+title: Cross-language gRPC client/server e2e matrix test
 area: testing, ci, grpc, multi-language
+status: open
+created: 2026-03-08
 ---
 
 # Cross-language gRPC client/server e2e matrix test
@@ -35,10 +36,10 @@ confirm cross-language interoperability is maintained — not just within a lang
 
 The following tickets must be substantially complete before the matrix is meaningful:
 
-- `thoughts/shared/tickets/go-grpc-client-server.md`
-- `thoughts/shared/tickets/java-grpc-client-server.md`
-- `thoughts/shared/tickets/python-grpc-client-server.md`
-- `thoughts/shared/tickets/rust-grpc-client-server.md`
+- `thoughts/shared/tickets/GO-001-go-grpc-client-server.md`
+- `thoughts/shared/tickets/JAVA-001-java-grpc-client-server.md`
+- `thoughts/shared/tickets/PY-001-python-grpc-client-server.md`
+- `thoughts/shared/tickets/RUST-001-rust-grpc-client-server.md`
 
 ## Context
 

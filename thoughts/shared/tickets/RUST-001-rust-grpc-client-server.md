@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: medium
+id: RUST-001
+title: Implement Rust gRPC client and server
 area: rust, grpc
+status: open
+created: 2026-03-05
 ---
 
 # Feature: Implement Rust gRPC client and server

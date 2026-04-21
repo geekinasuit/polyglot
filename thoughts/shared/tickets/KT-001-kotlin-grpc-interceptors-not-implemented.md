@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: low
+id: KT-001
+title: Kotlin gRPC server interceptor support not wired up
 area: kotlin, grpc
+status: open
+created: 2026-03-05
 ---
 
 # Incomplete: Kotlin gRPC server interceptor support not wired up

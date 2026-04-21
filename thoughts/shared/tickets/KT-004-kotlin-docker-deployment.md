@@ -1,8 +1,9 @@
 ---
-date: 2026-03-22
-status: open
-priority: medium
+id: KT-004
+title: Docker container build for the Kotlin service
 area: kotlin, docker, deployment
+status: open
+created: 2026-03-22
 ---
 
 # Feature: Docker container build for the Kotlin service

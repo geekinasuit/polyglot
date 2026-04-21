@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: medium
+id: JAVA-001
+title: Implement Java gRPC client and server
 area: java, grpc
+status: open
+created: 2026-03-05
 ---
 
 # Feature: Implement Java gRPC client and server

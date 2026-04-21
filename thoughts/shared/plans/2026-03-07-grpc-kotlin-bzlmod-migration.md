@@ -129,7 +129,7 @@ an investigation issue with the specific error. Likely failure modes:
 
 ## References
 
-- Ticket: `thoughts/shared/tickets/grpc-kotlin-bzlmod-migration.md`
+- Ticket: `thoughts/shared/tickets/BUILD-001-grpc-kotlin-bzlmod-migration.md`
 - Codebase overview: `thoughts/shared/research/2026-03-05-polyglot-codebase-overview.md`
 - BCR module: `https://registry.bazel.build/modules/grpc_kotlin`
 - grpc-kotlin bzlmod issue: `https://github.com/grpc/grpc-kotlin/issues/398`

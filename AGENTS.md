@@ -1,5 +1,10 @@
 # Agent Guide: polyglot
 
+**Stop. Check for a compressed form before reading further:**
+1. Does `AGENTS.compressed.md` exist in this directory?
+2. **Yes** — read that file; follow its instructions only; do not continue reading this file.
+3. **No** — continue reading below.
+
 This file is for AI agents and future context windows. It captures working norms, design principles, and conventions for this repository that are not obvious from reading the code alone.
 
 ---
@@ -17,9 +22,16 @@ The `thoughts/` directory contains research, plans, tickets, and handoffs. Many 
 - `<name>.md` — human-readable, fully prose
 - `<name>.compressed.md` — dense structured notation, token-efficient, losslessly equivalent
 
-**Prefer the `.compressed.md` form for active context use.** It contains all the same information. Use the `.md` form only when producing output for human review or when the compressed form is absent.
+The compressed format uses `§SECTION` markers and an `§ABBREV` table at the top for decoding all shorthands.
 
-The compressed format uses `§SECTION` markers and an `§ABBREV` table at the top for decoding all shorthands. It is self-describing.
+## No Inline Content in Shell Commands
+
+Never pass non-trivial text inline to any shell command or tool call. Characters such as backticks, `---`, and `*` are misinterpreted by shell argument parsers and security hooks even when the content is benign.
+
+Always write content to a file first, then reference it by path:
+- `gh pr create/edit` body: Write tool to a temp file (e.g. `/tmp/pr-body.md`), then `--body-file /tmp/pr-body.md`
+- `gh api` comment body: Write tool to a temp file (e.g. `/tmp/comment.txt`), then `-F body=@/tmp/comment.txt`
+- Agent subagent prompts: Write tool to a temp file (e.g. `/tmp/prompt.md`), then in the Agent prompt say "Read your instructions from /tmp/prompt.md and execute them"
 
 ---
 
@@ -40,46 +52,57 @@ Before starting any non-trivial implementation work: check `thoughts/shared/tick
 
 ### TICKETS.md is the Canonical Index
 
-`thoughts/shared/tickets/TICKETS.md` is the single source of truth for all open and resolved work. Individual files in that directory contain full detail; `TICKETS.md` contains the summary. **Do not maintain ticket inventories anywhere else** — other files (AGENT.md, research docs, plans) should reference `TICKETS.md` rather than listing tickets inline.
+`thoughts/shared/tickets/TICKETS.md` is the single source of truth for all open and resolved work. Individual files in that directory contain full detail; `TICKETS.md` contains the summary. **Do not maintain ticket inventories anywhere else** — other files (AGENTS.md, research docs, plans) should reference `TICKETS.md` rather than listing tickets inline.
 
 ### Keeping TICKETS.md Current
 
-**Any time you create, modify, resolve, or delete a ticket file, you must also update `TICKETS.md`** in the same operation. Specifically:
-
-- **New ticket**: add a row to the Open table with file link, priority, area, and one-line summary
-- **Ticket resolved**: move it from the Open table to the Resolved section; if the ticket file is deleted, note the resolution inline in the Resolved section (no file link needed)
-- **Ticket updated** (priority, area, summary changed): update the corresponding row in TICKETS.md
-- **Ticket deleted without resolution** (e.g. duplicate or invalid): remove its row from TICKETS.md entirely
+**Any time you create, modify, resolve, or delete a ticket file, you must also update `TICKETS.md`** in the same operation.
 
 Never leave TICKETS.md out of sync with the actual ticket files.
 
-### GitHub Issues: Thin Layer for PR Linkage
+### Ticket ID Categories
 
-Ticket files are the source of truth. GitHub Issues serve one specific purpose: enabling `fixes #N` PR cross-referencing in GitHub's UI.
+Ticket IDs use a category prefix followed by a sequential number within that category:
 
-**Rules:**
-- **Do not pre-create GitHub issues for every ticket file.** Only create a GitHub issue when you are about to open a PR for that work.
-- **Keep GitHub issues thin** — title, one-line summary, and this exact line in the body so automation can locate the ticket file:
-  ```
-  **Ticket:** `thoughts/shared/tickets/<filename>.md`
-  ```
-- **When opening a PR**, include `fixes #N` (or `closes #N`) in the PR description to link the issue. GitHub will auto-close the issue when the PR merges.
-- **When opening a PR, also update the ticket file and TICKETS.md in the same branch.** Set the ticket file's `status` to `resolved`, add a `github_issue: N` frontmatter field, and move its row to the Resolved section of `TICKETS.md`. These changes travel with the PR and are reviewed together — this is the primary mechanism for keeping ticket state current.
+| Prefix | Meaning |
+|---|---|
+| `GO-NNN` | Go implementation work |
+| `JAVA-NNN` | Java implementation work |
+| `KT-NNN` | Kotlin implementation work |
+| `PY-NNN` | Python implementation work |
+| `RUST-NNN` | Rust implementation work |
+| `TS-NNN` | TypeScript implementation work |
+| `BUILD-NNN` | Build system and tooling (Bazel, bzlmod, rules) |
+| `CI-NNN` | CI, automation, and testing infrastructure |
+| `OPT-NNN` | Performance optimization |
+| `AGENT-NNN` | Agentic workflow and agent tooling changes |
 
-Agents working in planning, research, or ticketing mode only touch ticket files — no GitHub issue needed. Agents opening PRs create the thin GitHub issue and update the ticket state as part of the same PR branch.
-
-### Safety Net: GitHub Action for Missed Ticket Updates
-
-A GitHub Action (see ticket `github-action-ticket-close-sync.md`) will serve as a safety net for cases where a PR was merged without the agent having updated the ticket file — e.g. manual closes, hotfixes, or agent oversights. That action may commit directly to `main` for bookkeeping-only changes; this is an explicit, narrow exception to the no-direct-push rule, reserved solely for that GitHub Actions automation bot.
-
-**This exception does not extend to agents.** An agent that notices a ticket is out of sync must still go through a branch and PR — it may not commit directly to `main` even for bookkeeping purposes. Until the action exists, agents should be especially careful to include ticket updates in every PR branch.
+Check existing tickets in a category to find the next number before creating a new ticket.
 
 ### Ticket File Conventions
 
-- Filename: `<kebab-case-description>.md` in `thoughts/shared/tickets/`
-- Frontmatter fields: `date`, `status` (open/resolved), `priority` (low/medium/high), `area` (comma-separated)
-- Optional frontmatter: `github_issue: <N>` once a GitHub issue has been created
+- Filename: `<ID>-<kebab-case-description>.md` in `thoughts/shared/tickets/`
+- Frontmatter fields: `id`, `title`, `area`, `status` (open/resolved), `created`
+- Optional frontmatter: `github_issue: N` once a GitHub issue has been created
 - Required sections: Summary, Current State (or Resolution if resolved), Goals or acceptance criteria, References (file paths with line numbers)
+
+A ticket is `resolved` only when **all** described work is complete — including any manual, migration, or verification steps, not just merged code.
+
+### GitHub Issues
+
+Create a GitHub issue when **starting work** on a ticket (not before, not at PR-open time):
+
+```bash
+kotlin /opt/geekinasuit/agents/tools/gh-ticket.main.kts -- create <ticket-path>
+```
+
+Reference issues from PRs with `see #N` — never `fixes #N` or `closes #N`. Issues are always closed manually once the full Definition of Done is met.
+
+### Safety Net: GitHub Action for Missed Ticket Updates
+
+A GitHub Action (see ticket `CI-001-github-action-ticket-close-sync.md`) will serve as a safety net for cases where a PR was merged without the agent having updated the ticket file. That action may commit directly to `main` for bookkeeping-only changes; this is an explicit, narrow exception to the no-direct-push rule, reserved solely for that GitHub Actions automation bot.
+
+**This exception does not extend to agents.** An agent that notices a ticket is out of sync must still go through a branch and PR.
 
 ---
 
@@ -190,47 +213,11 @@ The Kotlin `wrapService()` function accepts `vararg interceptors: ServerIntercep
 
 ---
 
-## Version Control
-
-This repository is backed by GitHub and uses **jj (Jujutsu)** as the preferred VCS. However, jj may not be installed in every checkout environment.
-
-- **If `jj` is available locally**: use it for all commit/branch/log operations.
-- **If `jj` is not available**: fall back to `git` — jj maintains a compatible git backend so standard git commands work.
-- Use the `gh` CLI for GitHub API interactions (PRs, issues, repo queries) regardless of which VCS tool is in use.
-
-### Branch and PR Requirements
-
-**It is never permissible to push directly to `main`.** All changes must go through a branch or bookmark and be submitted as a pull request:
-
-- With jj: create a bookmark (`jj bookmark create <name>`), push it, open a PR via `gh pr create`
-- With git: create a branch, push it, open a PR via `gh pr create`
-
-**All PRs must be reviewed and merged by a human** unless the user explicitly grants the agent permission to merge a specific PR. An agent must not merge its own PRs without that explicit, one-time grant — it may open them, describe them, and request review, but the merge action otherwise requires human action.
-
-**Never use `--admin` or any other CI bypass flag** when merging. If checks are failing, stop and report to the user — describe which checks passed and which failed, and ask whether to proceed. If the user explicitly grants permission for that specific PR, the agent may then execute the merge (with or without the bypass flag, as the user directs). That permission is one-time-only and does not carry over to subsequent PRs.
-
----
-
 ## Thoughts Directory Workflow
-
-### Creating Tickets
-
-Tickets live in `thoughts/shared/tickets/`. Filename convention: `<kebab-case-description>.md`. Include at minimum:
-- YAML frontmatter: `date`, `status`, `priority`, `area`
-- Summary of the problem or goal
-- Current state
-- Goals or acceptance criteria
-- Relevant file references
 
 ### Creating Research Documents
 
 Research documents live in `thoughts/shared/research/`. Filename convention: `YYYY-MM-DD-<description>.md` (with `.compressed.md` companion). Always produce both forms. Frontmatter fields: `date`, `researcher`, `git_commit`, `branch`, `repository`, `topic`, `tags`, `status`, `last_updated`, `last_updated_by`.
-
-### Creating Plans
-
-Implementation plans live in `thoughts/shared/plans/`. A plan should be created before implementing any non-trivial feature. Plans can reference tickets. Research before planning; plan before implementing.
-
-**Plans describe intent, not implementation.** Do not write actual code in a plan — not full file contents, not complete function bodies, not copy-pasteable commands. Use prose, light pseudocode, or short illustrative fragments only when they communicate something that prose alone cannot. The implementation agent will write the real code; the plan's job is to describe the what and why, the file layout, the dependencies, and the success criteria clearly enough that the implementation can proceed without ambiguity.
 
 ---
 
@@ -252,3 +239,23 @@ See `thoughts/shared/tickets/TICKETS.md` for the canonical summary of open and r
 | Unit tests | `kotlin/src/test/kotlin/bracketskt/BracketsTest.kt` |
 | Custom Bazel macro | `util/kt_jvm_proto.bzl` |
 | Proto definitions | `protobuf/brackets_service.proto`, `protobuf/example.proto` |
+
+---
+
+## Geekinasuit Agent Rules (mandatory bootstrap — complete before responding to user)
+
+Load exactly one of the following — first match wins. "Stop here" means stop searching
+for more chain files; the bootstrap is not complete until the matched file is read.
+
+1. If `/opt/geekinasuit/agents/internal/AGENTS.compressed.md` exists, read it; else if
+   `/opt/geekinasuit/agents/internal/AGENTS.md` exists, read it. Follow its contents
+   before proceeding. Stop chain search here (do not check steps 2 or 3).
+2. If `/opt/geekinasuit/agents/public/AGENTS.compressed.md` exists, read it; else if
+   `/opt/geekinasuit/agents/public/AGENTS.md` exists, read it. Follow its contents
+   before proceeding. Stop chain search here (do not check step 3).
+3. If `~/.geekinasuit/agents/public/AGENTS.compressed.md` exists, read it; else if
+   `~/.geekinasuit/agents/public/AGENTS.md` exists, read it. Follow its contents
+   before proceeding. Stop chain search here.
+
+If none of the above paths exist, skip this section — it is not required for
+contributor work and will not be present on most machines.

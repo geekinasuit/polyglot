@@ -1,9 +1,10 @@
 ---
-date: 2026-03-05
-status: done
-priority: low
+id: BUILD-001
+title: Migrate grpc_kotlin to bzlmod-native version when available
 area: kotlin, bazel, grpc
-github: https://github.com/geekinasuit/polyglot/issues/15
+status: open
+created: 2026-03-05
+github_issue: 15
 plan: thoughts/shared/plans/2026-03-07-grpc-kotlin-bzlmod-migration.md
 ---
 

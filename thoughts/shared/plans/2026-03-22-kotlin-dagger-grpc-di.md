@@ -8,7 +8,7 @@ construction in `BracketsService.run()` with a generated component graph, adds i
 interceptors via Dagger multibindings, and annotates `BalanceServiceEndpoint` with
 `@Inject` constructor + `@GrpcServiceHandler` so the KSP processor generates its adapter class.
 
-Client DI is explicitly deferred (see ticket `kotlin-dagger-client-di.md`).
+Client DI is explicitly deferred (see ticket `KT-003-kotlin-dagger-client-di.md`).
 
 ## Current State Analysis
 
@@ -536,8 +536,8 @@ of `TelemetryModule`. Wire an `@Component` for it following the same structure a
 
 ## References
 
-- Ticket: `thoughts/shared/tickets/kotlin-dagger-grpc-di.md`
+- Ticket: `thoughts/shared/tickets/KT-002-kotlin-dagger-grpc-di.md`
 - Library: `https://github.com/geekinasuit/dagger-grpc`
 - Library exemplar: `examples/io_grpc/bazel_build_kt/service/armeria/`
-- Client DI ticket: `thoughts/shared/tickets/kotlin-dagger-client-di.md`
+- Client DI ticket: `thoughts/shared/tickets/KT-003-kotlin-dagger-client-di.md`
 - OTel plan: `thoughts/shared/plans/2026-03-07-kotlin-otel-instrumentation.md`
