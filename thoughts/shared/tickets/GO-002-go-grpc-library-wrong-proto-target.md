@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: low
+id: GO-002
+title: go_grpc_library target wraps wrong proto source
 area: golang, bazel
+status: open
+created: 2026-03-05
 ---
 
 # Bug: `go_grpc_library` target wraps wrong proto source

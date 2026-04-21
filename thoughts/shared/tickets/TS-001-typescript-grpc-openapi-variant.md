@@ -1,8 +1,9 @@
 ---
-date: 2026-03-05
-status: open
-priority: medium
+id: TS-001
+title: Add TypeScript variant with gRPC client/server and OpenAPI REST endpoints
 area: typescript, grpc, openapi, bazel
+status: open
+created: 2026-03-05
 ---
 
 # Feature: Add TypeScript variant with gRPC client/server and OpenAPI REST endpoints

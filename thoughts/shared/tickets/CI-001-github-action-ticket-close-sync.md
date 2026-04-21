@@ -1,8 +1,9 @@
 ---
-date: 2026-03-06
-status: open
-priority: medium
+id: CI-001
+title: GitHub Action to sync ticket state on issue close
 area: automation, github, tickets
+status: open
+created: 2026-03-06
 ---
 
 # Feature: GitHub Action to sync ticket state on issue close

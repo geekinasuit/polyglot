@@ -1,8 +1,9 @@
 ---
-date: 2026-03-07
-status: open
-priority: low
+id: KT-002
+title: Introduce Dagger DI via dagger-grpc integration
 area: kotlin, grpc, di
+status: open
+created: 2026-03-07
 ---
 
 # Kotlin: Introduce Dagger DI via dagger-grpc integration

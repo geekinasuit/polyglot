@@ -1,8 +1,9 @@
 ---
-date: 2026-03-22
-status: open
-priority: low
+id: KT-003
+title: Dagger DI for the gRPC client
 area: kotlin, grpc, di
+status: open
+created: 2026-03-22
 ---
 
 # Kotlin: Dagger DI for the gRPC client
@@ -12,7 +13,7 @@ area: kotlin, grpc, di
 The Kotlin gRPC client (`BracketsClient`) currently wires all objects manually in `run()`:
 config, telemetry (`initTelemetry`), `ManagedChannel`, `BalanceBracketsCoroutineStub`. Introduce
 Dagger 2 DI for the client to mirror what is done for the service in ticket
-`kotlin-dagger-grpc-di.md`.
+`KT-002-kotlin-dagger-grpc-di.md`.
 
 ## Context
 
@@ -33,5 +34,5 @@ the service. The server DI plan should be completed and merged before this is st
 ## References
 
 - Server DI plan: `thoughts/shared/plans/2026-03-22-kotlin-dagger-grpc-di.md`
-- Server DI ticket: `thoughts/shared/tickets/kotlin-dagger-grpc-di.md`
+- Server DI ticket: `thoughts/shared/tickets/KT-002-kotlin-dagger-grpc-di.md`
 - Dagger docs: https://dagger.dev
