@@ -522,11 +522,11 @@ session coordinator (the human or coordinating agent).
 
 **Codegen runner:**
 
-Write a small Java/Kotlin main class (e.g. `JooqCodegenRunner`) that takes the DDL file
-path and output directory as CLI arguments, then calls `GenerationTool.generate(...)`
-programmatically with:
+Write a small Java/Kotlin main class (e.g. `JooqCodegenRunner`) that takes one or more DDL
+file paths followed by an output directory as CLI arguments (i.e. `<ddl-file>... <output-dir>`),
+then calls `GenerationTool.generate(...)` programmatically with:
 - `Database`: `org.jooq.meta.extensions.ddl.DDLDatabase`
-- Input schema: the DDL path arg
+- Input schema: all DDL path args (semicolon-separated) — `$(locations //db:migrations)` expands to all `.sql` files space-separated; runner treats all args except the last as DDL inputs, last arg as output dir; files processed in Bazel expansion order (lexicographic = migration order)
 - Target package: `com.geekinasuit.polyglot.brackets.db.jooq`
 - Target directory: the output dir arg
 
