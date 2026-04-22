@@ -761,6 +761,7 @@ disabling a pair in the test DB causes the algorithm to treat those characters a
 ## Acceptance Criteria (Summary)
 
 - [ ] PR 1: `balancedBrackets` accepts optional pair map; all existing tests pass unchanged
+- [ ] DBA doc: `thoughts/shared/research/2026-04-21-db-schema-design.md` exists and reviewed
 - [ ] Architect doc: `thoughts/shared/research/2026-04-21-db-feature-architecture.md` exists and reviewed
 - [ ] PR 2: `db/migrations/` + validated migration file + `//db:migrations` filegroup + `db/README.md`
 - [ ] PR 3: JOOQ genrule produces `Tables`, `BracketPair`, `BracketPairRecord`; `.gitignore`d; `bazel build` passes
