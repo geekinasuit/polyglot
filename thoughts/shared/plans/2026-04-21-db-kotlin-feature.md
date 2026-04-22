@@ -511,7 +511,7 @@ session coordinator (the human or coordinating agent).
 
 **Branch:** `kt-005-jooq-codegen`  
 **Prereq:** DB-001 merged  
-**Agents:** Tester then Coder (see prompts above); Architect available for consultation
+**Agents:** TDD Designer then Coder (see prompts above); Architect available for consultation
 
 **New maven artifacts in `MODULE.bazel`:**
 - `org.jooq:jooq:3.19.x` (latest stable)
@@ -580,7 +580,7 @@ kt_jvm_library(
 
 **Branch:** `kt-006-database-adapter`  
 **Prereq:** DB-001 merged (KT-005 not required — can be prepared in parallel with PR 3)  
-**Agents:** Tester then Coder (see prompts above); Architect available for consultation
+**Agents:** TDD Designer then Coder (see prompts above); Architect available for consultation
 
 **New maven artifacts in `MODULE.bazel`:**
 - `com.zaxxer:HikariCP:5.x.x`
@@ -683,7 +683,7 @@ on startup; in-memory SQLite works in tests.
 
 **Branch:** `kt-007-bracket-config`  
 **Prereqs:** PR 1 (algorithm param), KT-005, KT-006 all merged  
-**Agents:** Tester then Coder (see prompts above); Architect available for consultation
+**Agents:** TDD Designer then Coder (see prompts above); Architect available for consultation
 
 **`BracketPairRepository`** in new package `com.geekinasuit.polyglot.brackets.db`
 (exact interface shape from Architect design doc):
@@ -754,7 +754,7 @@ disabling a pair in the test DB causes the algorithm to treat those characters a
 | Flyway classpath scan misses Bazel runfiles | Use `filesystem:` location with `RUNFILES_DIR` resolution (see PR 4 detail) |
 | H2 DDL compatibility | Stick to safe subset; test locally |
 | Dagger raw `Map<Char, Char>` binding collision | Use `@Named` qualifier or a wrapper type if Dagger complains |
-| Architect/Tester/Coder deadlock | Coordinator breaks deadlock; Architect is authority on API shape |
+| Architect/TDD Designer/Coder deadlock | Coordinator breaks deadlock; Architect is authority on API shape |
 
 ---
 
