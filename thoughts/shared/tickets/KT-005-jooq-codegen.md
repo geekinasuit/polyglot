@@ -30,7 +30,7 @@ No JOOQ dependency exists. DB-001 will provide the schema DDL in `db/migrations/
 
 ## References
 
-- Schema: `db/migrations/V1__create_bracket_pair.sql` (after DB-001)
+- Schema: `db/migrations/<migration-file>` — see DB-001 for resolved filename convention (timestamp vs. `V1__` TBD)
 - Proto codegen pattern to follow: `kotlin/BUILD.bazel` — `kt_jvm_proto_library` + generated sources in `_deploy.jar`; same `.gitignore` treatment
 - JOOQ DDL codegen: https://www.jooq.org/doc/latest/manual/code-generation/codegen-ddl/
 - JOOQ Kotlin extensions: https://www.jooq.org/doc/latest/manual/sql-building/kotlin-sql-building/

@@ -38,7 +38,7 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
-| `DB-001-schema-migrations-setup.md` | database, migrations, cross-language | Flyway migration tooling + `db/migrations/` directory + V1 `bracket_pair` schema |
+| `DB-001-schema-migrations-setup.md` | database, migrations, cross-language | Flyway (JVM) + dbmate (non-JVM) dual-tool migration setup; `db/migrations/`; initial `bracket_pair` schema |
 | `KT-005-jooq-codegen.md` | kotlin, database, jooq, bazel | JOOQ + jooq-kotlin dependency + DDL-based codegen + Bazel genrule; prereq: DB-001 |
 | `KT-006-database-adapter.md` | kotlin, database, dagger, configuration | HikariCP DataSource, Flyway on startup, Dagger DatabaseModule, SQLite/PG support; prereq: DB-001 |
 | `KT-007-bracket-config-feature.md` | kotlin, database, feature | DB-backed bracket pairs: parameterize algorithm + BracketPairRepository + service wiring; prereq: DB-001, KT-005, KT-006 |
