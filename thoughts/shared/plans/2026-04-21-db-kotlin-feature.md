@@ -48,9 +48,9 @@ four-agent workflow described below.
 ### DDL / schema constraints
 
 All DDL must be compatible with three parsers:
-- **SQLite** — runtime (local dev, tests)
+- **SQLite** — runtime (local dev)
 - **PostgreSQL** — runtime (production)
-- **H2** — build time only (JOOQ DDLDatabase uses H2 to parse DDL during codegen)
+- **H2** — build time (JOOQ DDLDatabase) and test time (in-memory DB for fast, hermetic tests)
 
 `INTEGER PRIMARY KEY`, `CHAR(1)`, `BOOLEAN NOT NULL DEFAULT TRUE` are safe across all three.
 Avoid: `RETURNING`, `SERIAL`, stored procedures, `ADD COLUMN ... AFTER`, `GENERATED ALWAYS`.
@@ -153,8 +153,11 @@ This is the exception; in a greenfield feature the Architect would run first.
 >    section) works correctly for both dbmate and Flyway on the same file.
 >
 > 6. **Test data strategy:** How do integration tests get a clean, reproducible DB state?
->    Propose the pattern (e.g. in-memory SQLite per test class, schema applied via Flyway,
->    seed data inserted in test setup). No shared mutable state between tests.
+>    Use H2 in-memory (`jdbc:h2:mem:...`) as the test database — not SQLite. H2 is already a
+>    required dep for JOOQ codegen, avoids adding SQLite-jdbc to test scope, and gives faster
+>    hermetic tests without file-system state. Propose the pattern: H2 in-memory per test class,
+>    schema applied via Flyway (using the same migration files), test-specific data inserted in
+>    test setup. No shared mutable state between tests.
 >
 > 7. **Bazel filegroup:** Confirm `//db:migrations` with `glob(["migrations/*.sql"])` is
 >    sufficient. Note any edge cases (e.g. ordering, subdirectory layout).
@@ -167,6 +170,11 @@ This is the exception; in a greenfield feature the Architect would run first.
 >
 > Mark each decision as **fixed** (Architect and implementers must not deviate) or
 > **provisional** (open to refinement by the Architect or implementers with good reason).
+>
+> **ADR logging:** For any decision with meaningful tradeoffs not already captured in the
+> research doc above, write a short ADR to `thoughts/shared/decisions/YYYY-MM-DD-<slug>.md`
+> (standard format: Title, Status, Context, Decision, Consequences). Not every choice needs
+> an ADR — only those where the rationale would otherwise be invisible to a future reader.
 
 ---
 
@@ -235,7 +243,9 @@ This is the exception; in a greenfield feature the Architect would run first.
 > 6. **Test surfaces.** For each layer, describe: what is tested at unit vs. integration
 >    level? What kinds of test doubles are needed? Which Dagger modules would a test graph
 >    replace? Keep at the level of "a fake in-memory implementation of the repository
->    interface" — the TDD Designer will write the actual fake.
+>    interface" — the TDD Designer will write the actual fake. Note: integration tests use
+>    H2 in-memory (`jdbc:h2:mem:...`), not SQLite — H2 is already required for JOOQ codegen
+>    and keeps tests hermetic without file-system state.
 >
 > 7. **Explicitly deferred decisions.** List what you are deliberately leaving open for the
 >    TDD Designer. This is not a weakness — it is the handoff boundary. Be clear about which
@@ -251,6 +261,11 @@ This is the exception; in a greenfield feature the Architect would run first.
 > responsibility and constraint level — not at method-signature level. Be explicit about
 > what is fixed (TDD Designer must not deviate) versus what is deliberately open
 > (TDD Designer's domain to decide).
+>
+> **ADR logging:** For any decision with meaningful tradeoffs not already captured in the
+> research doc above, write a short ADR to `thoughts/shared/decisions/YYYY-MM-DD-<slug>.md`
+> (standard format: Title, Status, Context, Decision, Consequences). Not every choice needs
+> an ADR — only those where the rationale would otherwise be invisible to a future reader.
 
 ---
 
@@ -302,6 +317,11 @@ This is the exception; in a greenfield feature the Architect would run first.
 > - Use fakes over mocks. If a test needs a fake repository, write one — a few lines of
 >   in-memory state. Mocks couple tests to implementation details.
 > - Follow existing test patterns: JUnit 4 (`@Test`), Truth assertions.
+> - Use H2 in-memory (`jdbc:h2:mem:...`) as the database for all integration-style tests —
+>   not SQLite. H2 is already required for JOOQ codegen; using it for tests avoids an extra
+>   dep and keeps tests fully hermetic. Apply migrations via Flyway in test setup.
+> - **ADR logging:** For any tactical decision with non-obvious rationale not captured in your
+>   tests or comments, write a short ADR to `thoughts/shared/decisions/YYYY-MM-DD-<slug>.md`.
 > - If a design decision feels like it might conflict with the Architect's intent — not just
 >   fill a gap, but potentially push against a stated constraint — check with the Architect
 >   before committing to it. Don't second-guess on small tactical choices; escalate genuine
@@ -310,7 +330,8 @@ This is the exception; in a greenfield feature the Architect would run first.
 > **Cover at minimum:**
 >
 > 1. The repository contract (whatever interface/class shape you decide on):
->    - Enabled pairs loaded correctly from an in-memory SQLite DB (with migration applied)
+>    - Enabled pairs loaded correctly from an H2 in-memory DB (`jdbc:h2:mem:...`) with the
+>      migration applied via Flyway
 >    - Disabled pairs ignored
 >    - Empty DB → empty result, no crash
 >    - close→open mapping direction correct
@@ -322,7 +343,7 @@ This is the exception; in a greenfield feature the Architect would run first.
 >    - Characters not in the pair set treated as plain text
 >
 > 3. Dagger wiring:
->    - Test graph builds with in-memory SQLite `DatabaseConfig`
+>    - Test graph builds with H2 in-memory `DatabaseConfig` (`jdbc:h2:mem:...`)
 >    - Repository (or its interface) is injectable from test graph
 >    - Disabling a pair in the test DB causes that pair's characters to be accepted as plain text end-to-end
 >
@@ -386,7 +407,8 @@ This is the exception; in a greenfield feature the Architect would run first.
 > - Follow existing Bazel patterns: `kt_jvm_library` for libraries, `java_binary` +
 >   `runtime_deps` for binaries, `associates = [...]` for internal member access in tests.
 >   Add new maven deps to `MODULE.bazel` `maven.install` artifacts.
-> - Keep H2 out of service runtime deps — it is build-time only (used by JOOQ DDLDatabase).
+> - H2 is used for both JOOQ codegen (build-time) and in-memory integration tests (test-time).
+>   Keep it out of service runtime deps — it must not appear in the production binary's classpath.
 > - Flyway must use `filesystem:` location (not classpath scanning) for Bazel runfiles
 >   compatibility. See the plan for the `RUNFILES_DIR` resolution pattern.
 > - The JOOQ `genrule` `outs` list must be exhaustive. Run codegen locally once, observe
@@ -401,6 +423,11 @@ This is the exception; in a greenfield feature the Architect would run first.
 > **Escalation:** If you and the TDD Designer reach an impasse on a public contract question,
 > bring the specific conflict to the Architect with a clear question. Do not resolve it
 > unilaterally. The Coordinator can break deadlocks if the Architect cannot resolve them.
+>
+> **ADR logging:** For any implementation decision with non-obvious rationale — a library
+> call choice, an internal structure decision, a workaround — write a short ADR to
+> `thoughts/shared/decisions/YYYY-MM-DD-<slug>.md` if the reasoning would otherwise be
+> invisible to a future reader of the code.
 
 ---
 
@@ -566,7 +593,7 @@ kt_jvm_library(
 - JOOQ codegen produces Java sources (`.java`), not Kotlin — this is expected and standard
 - `jooq-kotlin` is a runtime extension (coroutine-friendly `fetchOne`, `map`, etc.); it adds
   no generated `.kt` files
-- H2 is a build-time-only dep of the runner; it must not appear in service `runtime_deps`
+- H2 is used for codegen (build-time) and tests (test-time); it must not appear in service `runtime_deps`
 - The `outs` list must be exhaustive — run codegen locally once to discover all output files
   before finalizing the genrule
 - Add all generated paths under `kotlin/` to `.gitignore` (consistent with proto codegen policy)
@@ -594,12 +621,13 @@ kt_jvm_library(
 Add `DatabaseConfig` and wire into `ServiceAppConfig`:
 ```kotlin
 data class DatabaseConfig(
-    val url: String = "jdbc:sqlite::memory:",
+    val url: String = "jdbc:sqlite::memory:", // local dev default; tests use jdbc:h2:mem:...
     val driver: String = defaultDriver(url),
     val maxPoolSize: Int = 5,
 )
 
 fun defaultDriver(url: String): String = when {
+    url.startsWith("jdbc:h2") -> "org.h2.Driver"
     url.startsWith("jdbc:sqlite") -> "org.sqlite.JDBC"
     url.startsWith("jdbc:postgresql") -> "org.postgresql.Driver"
     else -> error("Unsupported JDBC URL: $url")
@@ -670,12 +698,12 @@ Flyway.configure()
 - Add new maven runtime deps to `service_lib` in `service/BUILD.bazel`
 
 **Tests:**
-- Include `DatabaseModule` in `TestApplicationGraph` with in-memory SQLite config
+- Include `DatabaseModule` in `TestApplicationGraph` with H2 in-memory config (`jdbc:h2:mem:...`)
 - Existing `graphBuilds` and `serverProvides` tests must continue to pass
 - Verify Flyway migration runs without error on the test graph
 
 **Acceptance:** `bazel test //kotlin/...` passes; service starts; Flyway migration applies
-on startup; in-memory SQLite works in tests.
+on startup; H2 in-memory works in tests.
 
 ---
 
@@ -728,12 +756,12 @@ class BalanceServiceEndpoint @Inject constructor(
 ```
 
 **Tests:**
-- `BracketPairRepositoryTest`: in-memory SQLite `DSLContext`, apply migration via Flyway,
-  insert test rows, assert `loadEnabledPairs()` returns correct close→open map
+- `BracketPairRepositoryTest`: H2 in-memory `DSLContext` (`jdbc:h2:mem:...`), apply migration
+  via Flyway, insert test rows, assert `loadEnabledPairs()` returns correct close→open map
 - `BalanceServiceEndpointTest`: supply a known pair map as constructor arg (no DB needed)
 - Disable-pair test: insert rows with `enabled=false` for `()`, assert those characters
   are treated as plain text by the algorithm
-- `ApplicationGraphTest` updates: supply `DatabaseConfig` with in-memory SQLite so the
+- `ApplicationGraphTest` updates: supply `DatabaseConfig` with H2 in-memory URL so the
   full graph (now including `BracketConfigModule`) builds cleanly
 
 **Bazel wiring:**
