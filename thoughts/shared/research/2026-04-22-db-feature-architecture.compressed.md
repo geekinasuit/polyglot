@@ -1,6 +1,6 @@
-<!--COMPRESSED v3; source:2026-04-22-db-feature-architecture.md; revised:2026-04-21-->
+<!--COMPRESSED v3; source:2026-04-22-db-feature-architecture.md; revised:2026-04-22-->
 §META
-date:2026-04-22 revised:2026-04-21 researcher:claude(Architect) topic:Kotlin DB feature architecture
+date:2026-04-22 revised:2026-04-22 researcher:claude(Architect) topic:Kotlin DB feature architecture
 tickets:KT-005,KT-006,KT-007 status:complete(revised)
 
 §ABBREV
@@ -15,7 +15,7 @@ tag=TestApplicationGraph ag=ApplicationGraph
 
 §REVISION
 v2(initial 2026-04-22): BracketPairSource interface; ep @as; BracketConfigModule
-v3(this revision 2026-04-21): ep corrected to @gcs; BracketPairSource+bm removed;
+v3(this revision 2026-04-22): ep corrected to @gcs; BracketPairSource+bm removed;
   gcsgm provides Map<Char,Char>; bst wrapper introduced for OTel instruments
 
 §SUMMARY

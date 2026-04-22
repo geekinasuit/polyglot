@@ -1,7 +1,7 @@
 ---
 date: 2026-04-22
 status: superseded
-superseded-by: 2026-04-21-endpoint-grpccallscope-and-map-injection.md
+superseded-by: 2026-04-22-endpoint-grpccallscope-and-map-injection.md
 author: claude (Architect agent)
 tickets: KT-006, KT-007
 ---
@@ -11,7 +11,7 @@ tickets: KT-006, KT-007
 > **Superseded (2026-04-21):** This ADR's core decision (inject `BracketPairSource`) has been
 > reversed. `BalanceServiceEndpoint` is now `@GrpcCallScope` and receives a plain `Map<Char, Char>`
 > injected by `GrpcCallScopeGraphModule`. `BracketPairSource` does not exist in the design.
-> See `2026-04-21-endpoint-grpccallscope-and-map-injection.md` for the current decision.
+> See `2026-04-22-endpoint-grpccallscope-and-map-injection.md` for the current decision.
 
 ## Status
 
@@ -44,7 +44,7 @@ less expressive than a domain-named interface. Rejected in favor of Option C.
 
 ~~Use **Option C** — inject `BracketPairSource`.~~
 
-This decision has been superseded. See `2026-04-21-endpoint-grpccallscope-and-map-injection.md`.
+This decision has been superseded. See `2026-04-22-endpoint-grpccallscope-and-map-injection.md`.
 
 ## Why this decision was superseded
 

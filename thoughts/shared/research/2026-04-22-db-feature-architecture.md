@@ -3,7 +3,7 @@ date: 2026-04-22
 researcher: claude (Architect agent)
 topic: Kotlin DB feature architecture — layer boundaries, Dagger decomposition, test surfaces
 tickets: KT-005, KT-006, KT-007
-status: complete (revised 2026-04-21 — GrpcCallScope correction, BracketPairSource removed)
+status: complete (revised 2026-04-22 — GrpcCallScope correction, BracketPairSource removed)
 ---
 
 # DB Feature Architecture: Kotlin Layer Design
@@ -19,7 +19,7 @@ reads this first and uses it as the primary constraint. Sections explicitly mark
 | Date | Change |
 |------|--------|
 | 2026-04-22 (initial) | Three-layer design with `BracketPairSource` interface for per-request freshness; `BalanceServiceEndpoint` at `@ApplicationScope` |
-| 2026-04-21 (this revision) | `BalanceServiceEndpoint` corrected to `@GrpcCallScope`; `BracketPairSource` removed; `GrpcCallScopeGraphModule` provides `Map<Char, Char>`; `BracketConfigModule` removed; `BracketsServiceTelemetry` wrapper introduced |
+| 2026-04-22 (this revision) | `BalanceServiceEndpoint` corrected to `@GrpcCallScope`; `BracketPairSource` removed; `GrpcCallScopeGraphModule` provides `Map<Char, Char>`; `BracketConfigModule` removed; `BracketsServiceTelemetry` wrapper introduced |
 
 ---
 
