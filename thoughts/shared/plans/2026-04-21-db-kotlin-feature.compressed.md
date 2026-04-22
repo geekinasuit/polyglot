@@ -26,7 +26,7 @@ PR-3–PR-5: four-agent workflow (DBA↔Architect[design phase]→TDD Designer�
 
 §CONSTRAINTS
 DDL must satisfy THREE parsers:
-  SQLite(runtime local/test) | PostgreSQL(runtime prod) | H2(build-time; DDLDatabase uses H2)
+  SQLite(runtime local dev) | PostgreSQL(runtime prod) | H2(build-time codegen + test-time in-memory DB)
 safe: INTEGER PRIMARY KEY; CHAR(1); BOOLEAN NOT NULL DEFAULT TRUE
 avoid: RETURNING; SERIAL; stored procs; ADD COLUMN...AFTER; GENERATED ALWAYS
 
@@ -56,11 +56,13 @@ CONSTRAINTS BY ROLE:
       applies to .md output docs only — .sql and other non-prose files have NO compressed form
       must produce both .md + .compressed.md for research output doc
     shell-safety: never inline non-trivial text in shell cmds; write to /tmp/polyglot-<purpose>-<ctx>.txt first
+    ADR logging: decisions with meaningful tradeoffs not in research doc → thoughts/shared/decisions/YYYY-MM-DD-<slug>.md
   TDD Designer + Coder:
     VCS: jj only; never run git
     build: bazel (not bazelisk)
     style: ktfmt all modified .kt files before work is done
     shell-safety: same as above
+    ADR logging: non-obvious decisions not captured in tests/comments → thoughts/shared/decisions/YYYY-MM-DD-<slug>.md
 
 DBA PROMPT:
   Constraints: compressed-format + shell-safety (see above)
@@ -76,11 +78,12 @@ DBA PROMPT:
     2. Migration filename convention: validate Flyway empty-prefix+single-_ approach;
        produce validated conclusion (works or fallback) with evidence
     3. Seed data strategy: INSERT in migration vs. separate mechanism;
-       can tests reset/override seed data cleanly with in-memory SQLite?
+       can tests reset/override seed data cleanly with H2 in-memory?
     4. Future schema evolution: what changes are plausible? does initial schema foreclose any?
        don't over-engineer — just avoid unnecessary dead ends
     5. dbmate compatibility: confirm -- migrate:up (no down) works for both tools on same file
-    6. Test data strategy: in-memory SQLite per test; schema+seed via Flyway; no shared state
+    6. Test data strategy: H2 in-memory (jdbc:h2:mem:...) per test; schema via Flyway; test data in setup; no shared state
+       H2 already required for JOOQ codegen — avoids adding sqlite-jdbc to test scope
     7. Bazel filegroup: //db:migrations glob sufficient? any edge cases?
   Output: thoughts/shared/research/2026-04-21-db-schema-design.md + .compressed.md
   Mark each decision: fixed (others must not deviate) | provisional (open to Architect/impl refinement)
@@ -115,6 +118,7 @@ ARCHITECT PROMPT:
     5. Coroutine readiness: JOOQ blocking; describe how repository boundary contains future async migration
     6. Test surfaces per layer: unit vs integration; kinds of doubles needed; test Dagger modules
        keep at "fake in-memory impl of repository interface" level — TDD Designer writes the actual fake
+       integration tests use H2 in-memory (not SQLite; H2 already required for JOOQ codegen)
     7. Explicitly deferred: list what TDD Designer decides; flag what must be settled now vs. later
   Output: thoughts/shared/research/$arch.md + .compressed.md
   Write at responsibility+constraint level — NOT method-signature level
@@ -145,7 +149,7 @@ TDD-DESIGNER PROMPT:
   Cover:
     Repository contract: enabled pairs loaded; disabled ignored; empty→no crash; close→open direction
     Service layer: known pairs→correct result(no DB); empty→error response; unbalanced→correct error; unknown chars=plain text
-    Dagger wiring: test graph with in-memory SQLite; repository injectable; disable-pair end-to-end
+    Dagger wiring: test graph with H2 in-memory (jdbc:h2:mem:...); repository injectable; disable-pair end-to-end
   When done: tell Coder — files written; interfaces+types defined; TODO() bodies for them to fill;
     decisions that extend/deviate from Architect doc (so Coder understands full contract)
   Coder must not change your type/interface/sig definitions without your agreement; escalate to Architect if unresolved
@@ -172,7 +176,7 @@ CODER PROMPT:
     TDD Designer agrees → make change; disagree → escalate to Architect
     impossible test = reason to propose a change; bring to TDD Designer with explanation; never silent change
     Bazel: kt_jvm_library; java_binary+runtime_deps; associates=[...]; new deps → mm maven.install
-    H2 NOT in service runtime_deps (build-time only)
+    H2: build-time(codegen) + test-time(in-memory DB); NOT in service runtime_deps
     Flyway: filesystem: location + RUNFILES_DIR resolution (see plan PR-4)
     JOOQ genrule outs: exhaustive; run codegen locally once first to discover all files
   Per PR(3,4,5 in order): read design docs+tests → implement → bazel test //kotlin/... passes → ktfmt → report deviations
@@ -203,7 +207,7 @@ PRE-PR-3: design phase [DBA first in this project; Architect reads DBA output; s
 
 PR-3 KT-005 branch:kt-005-jooq-codegen prereq:DB-001 agents:TDD Designer→Coder [consult DBA+Architect]
   new mm: org.jooq:jooq:3.19.x; jooq-kotlin:3.19.x; jooq-meta-extensions:3.19.x[codegen];
-          jooq-codegen:3.19.x[codegen]; com.h2database:h2:2.x.x[build-time only]
+          jooq-codegen:3.19.x[codegen]; com.h2database:h2:2.x.x[codegen+test; not service runtime]
   codegen runner: JooqCodegenRunner(DDL path, out dir) → GenerationTool.generate()
     Database=DDLDatabase; pkg=com.geekinasuit.polyglot.brackets.db.jooq
   Bazel: java_binary(jooq_codegen_runner) → genrule(jooq_generated_srcs;outs exhaustive) →
@@ -220,7 +224,7 @@ PR-4 KT-006 branch:kt-006-database-adapter prereq:DB-001 [parallel with PR-3] ag
   FLYWAY GOTCHA: filesystem: location; Paths.get(RUNFILES_DIR?:".", "_main/db/migrations")
   wire DatabaseModule into ApplicationGraph
   Bazel: //db:migrations → data= of brackets_service; runtime deps in service BUILD.bazel
-  tests: TestApplicationGraph with in-memory SQLite; existing tests pass
+  tests: TestApplicationGraph with H2 in-memory (jdbc:h2:mem:test); existing tests pass
   accept: bazel test //kotlin/... passes; Flyway runs on startup
 
 PR-5 KT-007(remainder) branch:kt-007-bracket-config prereqs:PR-1+KT-005+KT-006 agents:TDD Designer→Coder [consult DBA+Architect]
@@ -230,10 +234,10 @@ PR-5 KT-007(remainder) branch:kt-007-bracket-config prereqs:PR-1+KT-005+KT-006 a
   Dagger: BracketConfigModule provides Map<Char,Char> @ApplicationScope from repo.loadEnabledPairs()
   BalanceServiceEndpoint: inject Map<Char,Char>; pass to balancedBrackets; empty→error response
   tests:
-    BracketPairRepositoryTest: in-memory SQLite; migration; assert loadEnabledPairs
+    BracketPairRepositoryTest: H2 in-memory (jdbc:h2:mem:...); migration; assert loadEnabledPairs
     BalanceServiceEndpointTest: known pair map; no DB
     disable-pair test: () disabled→treated as plain text
-    ApplicationGraphTest: DatabaseConfig in-memory SQLite; full graph builds
+    ApplicationGraphTest: DatabaseConfig H2 in-memory; full graph builds
   Bazel: kt_jvm_library for db pkg; add to service_lib deps
   accept: bazel test //kotlin/... passes; disable-pair test passes
 

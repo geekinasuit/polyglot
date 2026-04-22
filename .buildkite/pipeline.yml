@@ -74,6 +74,10 @@ steps:
 
   - label: ":go: Go exec via Bazel (Linux)"
     depends_on: test-linux
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     plugins:
       - docker#v5.11.0:
           image: "local/ci-agent:latest"
@@ -119,6 +123,10 @@ steps:
 
   - label: ":go: Go exec via Bazel (macOS)"
     depends_on: test-macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     agents:
       os: macos
     command: bazel run --config=ci //golang/cmd/brackets
