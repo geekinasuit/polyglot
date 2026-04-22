@@ -4,6 +4,7 @@ package com.geekinasuit.polyglot.brackets.config
 data class ServiceAppConfig(
     val service: ServiceConfig = ServiceConfig(),
     val telemetry: TelemetryConfig = TelemetryConfig(),
+    val db: DatabaseConfig = DatabaseConfig(),
 )
 
 /** Top-level config for the client binary. */
@@ -24,6 +25,10 @@ data class ClientConfig(
     val port: Int = 8888,
     val environment: String = defaultEnvironment(),
     val instanceId: String = defaultInstanceId(),
+)
+
+data class DatabaseConfig(
+    val jdbcUrl: String = "jdbc:h2:mem:brackets;DB_CLOSE_DELAY=-1",
 )
 
 data class TelemetryConfig(

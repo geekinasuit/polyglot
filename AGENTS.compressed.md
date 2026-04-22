@@ -15,15 +15,18 @@ goal: good example of how to do things well, not just proof-of-concept
 $ts/ docs have two forms: <name>.md(human) + <name>.compressed.md(token-efficient,lossless)
 compressed uses §SECTION markers + §ABBREV table at top
 
-§NOINLINE
-never pass non-trivial text inline to any shell command|tool call
-(backticks,---,* misinterpreted by shell parsers and security hooks)
-always write to file first, then reference by path:
-  gh pr create/edit body → /tmp/... → --body-file /tmp/...
-  gh api comment body → /tmp/... → -F body=@/tmp/...
-  agent subagent prompts → /tmp/... → Agent prompt: "Read instructions from /tmp/..."
-unique tmp names: include repo+purpose+context (e.g. /tmp/polyglot-pr-body-32.md); never /tmp/pr-body.md — collides across agents
-use cat > (Bash) not Write tool for tmp files: Write errors if file exists without prior read; error can be missed→stale content used
+§NOINLINE [NON-OPTIONAL — mechanical harness enforcement; violations block every call requiring hand-permission]
+FORBIDDEN in any Bash tool call:
+  heredocs: cmd << 'EOF'...EOF
+  inline multi-line strings: -m "line1\nline2" or -F body="text with `backticks`"
+  command substitution: cmd $(other_cmd)
+  any string containing backticks|---| asterisks passed as a shell argument
+REQUIRED pattern — no exceptions:
+  write body/prompt/message → /tmp/<repo>-<branch>-<purpose>.md via Write tool
+  reference by path: --body-file /tmp/... | -F body=@/tmp/... | Agent prompt:"Read instructions from /tmp/..."
+unique tmp names: include repo+purpose+context (e.g. /tmp/polyglot-pr-body-32.md); never /tmp/pr-body.md — collides
+use Write tool for /tmp files (unique names prevent exists-error); cat > heredoc is also FORBIDDEN
+THIS RULE APPLIES TO SUBAGENTS TOO: embed it verbatim at the top of every prompt written to /tmp before spawning
 
 §LAYOUT
 $ts/research/   read before implementing

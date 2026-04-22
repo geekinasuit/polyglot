@@ -4,6 +4,7 @@ title: Database adapter layer — DataSource config, connection pool, Flyway, Da
 area: kotlin, database, dagger, configuration
 status: open
 created: 2026-04-21
+github_issue: 49
 ---
 
 ## Summary
