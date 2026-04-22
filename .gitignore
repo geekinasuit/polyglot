@@ -17,6 +17,9 @@
 # Generated files
 *.pb.go
 
+# JOOQ generated sources (produced by //kotlin:jooq_generated_srcs genrule)
+kotlin/com/geekinasuit/polyglot/brackets/db/jooq/
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 

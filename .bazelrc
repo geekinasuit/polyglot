@@ -1,4 +1,5 @@
 common --java_runtime_version=21
+common --tool_java_runtime_version=21
 
 # CI config: enable sandboxing (seatbelt on macOS, namespaces on Linux) and local disk cache.
 # All Buildkite pipeline steps pass --config=ci.

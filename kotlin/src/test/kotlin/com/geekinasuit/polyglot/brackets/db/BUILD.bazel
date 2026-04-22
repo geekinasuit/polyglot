@@ -1,0 +1,12 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "JooqCodegenSmokeTest",
+    srcs = ["JooqCodegenSmokeTest.kt"],
+    test_class = "com.geekinasuit.polyglot.brackets.db.JooqCodegenSmokeTest",
+    deps = [
+        "//kotlin:jooq_db_lib",
+        "@maven//:com_google_truth_truth",
+        "@maven//:junit_junit",
+    ],
+)
