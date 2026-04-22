@@ -13,17 +13,18 @@ val closedParentheses =
 val openParentheses = closedParentheses.values.toSet()
 
 @Throws()
-public fun balancedBrackets(text: String) {
+public fun balancedBrackets(text: String, pairs: Map<Char, Char> = closedParentheses) {
   if (text.isEmpty()) return // short-circuit
 
+  val opens = pairs.values.toSet()
   val stack = ArrayDeque<Char>()
   for ((i, c) in text.withIndex()) {
     when (c) {
-      in openParentheses -> {
+      in opens -> {
         stack.push(c)
       }
-      in closedParentheses -> {
-        val open = closedParentheses[c]
+      in pairs -> {
+        val open = pairs[c]
         val last =
             stack.removeLastOrNull()
                 ?: throw BracketsNotBalancedException(
