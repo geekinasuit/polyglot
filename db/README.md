@@ -53,6 +53,7 @@ All DDL in this directory must be compatible with three parsers:
 | H2 | Build-time only — JOOQ DDLDatabase codegen (KT-005) |
 
 Safe DDL subset: `INTEGER PRIMARY KEY`, `CHAR(1)`, `BOOLEAN NOT NULL DEFAULT TRUE`.
+Note: `DEFAULT TRUE` requires SQLite >= 3.23.0 (April 2018); the `TRUE` literal was not recognized before that release.
 
 Avoid: `RETURNING`, `SERIAL`, stored procedures, `ADD COLUMN ... AFTER`, `GENERATED ALWAYS`.
 
