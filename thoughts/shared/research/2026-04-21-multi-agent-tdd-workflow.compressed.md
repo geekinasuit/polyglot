@@ -54,6 +54,10 @@ TDD Designer
   fills Architect's open space: interface names, method sigs, error contracts, type shapes, test doubles
   produced types+interfaces = public contract Coder must implement (not placeholders)
   design principles: narrow interfaces; value types over primitives at boundaries; fakes not mocks
+    design for the call site: APIs are code callers will write; where a wrapper exposes domain-relevant
+    methods directly(vs. callers reaching through to fields) prefer the wrapper; also improves testability
+    (meaningful interface > struct of library objects for faking); judgment call — apply where result is
+    genuinely cleaner, not reflexively
   not responsible for: implementation bodies, private helper extraction, internal state
 
 Coder
@@ -101,7 +105,13 @@ TDD Designer + Coder:
   build: bazel not bazelisk (or project equivalent)
   style: run formatter (ktfmt/gofmt/etc.) on all modified source files before done
   shell-safety: same as above
-[adjust VCS/build/style per target repo toolchain; shell-safety is universal]
+  bazel-out: DO NOT read files under bazel-out/|bazel-bin/ — config-stamped, volatile, not a readable API
+    build/test success → exit code+stderr
+    dep graph → bazel query 'deps(...)'
+    codegen output shape → run generator to /tmp/out; find /tmp/out -name "*.java" (actual generator output, not cache)
+    generated code content → write import test; do NOT read generated .java/.kt source
+    find on known output dir is fine for shape; reading content from bazel-out is almost never right
+[adjust VCS/build/style per target repo toolchain; shell-safety+bazel-out rules are universal]
 
 §PROMPT_TEMPLATES
 
@@ -122,18 +132,20 @@ Architect:
   output: <ARCH_DOC>.md + .compressed.md; mark fixed|provisional
 
 TDD Designer:
-  constraints: VCS + build + style + shell-safety
+  constraints: VCS + build + style + shell-safety + bazel-out
   read: <ARCH_DOC>[primary constraint, not complete spec]; <SCHEMA_DOC>; <PLAN>; existing test files
   role: tactical designer test-first; fill Architect's open space with concrete types+tests
     your type+interface defs = design output, not placeholders
   principles: narrow interfaces; value types at boundaries; fakes not mocks; open decisions→make them+document
+    design for call site: prefer wrappers that expose domain methods over structs of library objects;
+    improves readability+testability; judgment call — apply where genuinely cleaner, not reflexively
   cover: repository contract(happy/edge/error); service layer(direct input/empty/error); DI wiring+e2e
   placement: type+interface defs in main src; tests+fakes in test src; add build targets
   handoff: tell Coder — files; interfaces; TODO() bodies; deviations from Arch doc
   Coder must not change your sigs without TDD Designer agreement + possible Architect escalation
 
 Coder:
-  constraints: VCS + build + style + shell-safety
+  constraints: VCS + build + style + shell-safety + bazel-out
   read: <ARCH_DOC>; <SCHEMA_DOC>; <PLAN>; all TDD Designer files (they list these); relevant src
   role: fill implementation bodies; public contract is fixed; private domain is yours
   private domain: private types, fns, local names, helpers, utility extraction, internal state, lib calls — create freely
