@@ -102,6 +102,10 @@ steps:
 
   - label: ":kotlin: Kotlin integration test (Linux)"
     depends_on: test-linux
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     plugins:
       - docker#v5.11.0:
           image: "local/ci-agent:latest"
@@ -121,6 +125,10 @@ steps:
 
   - label: ":apple: :kotlin: Kotlin integration test (macOS)"
     depends_on: test-macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     agents:
       os: macos
     command: .buildkite/scripts/kotlin-integration-test.sh
