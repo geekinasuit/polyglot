@@ -1,0 +1,16 @@
+-- migrate:up
+
+CREATE TABLE bracket_pair (
+    id         INTEGER     NOT NULL,
+    open_char  CHAR(1)     NOT NULL,
+    close_char CHAR(1)     NOT NULL,
+    enabled    BOOLEAN     NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO bracket_pair (id, open_char, close_char) VALUES (1, '(', ')');
+INSERT INTO bracket_pair (id, open_char, close_char) VALUES (2, '{', '}');
+INSERT INTO bracket_pair (id, open_char, close_char) VALUES (3, '[', ']');
+
+-- migrate:down
+-- Down migrations are intentionally not implemented in this project.
