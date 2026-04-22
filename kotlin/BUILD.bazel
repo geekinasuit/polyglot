@@ -33,6 +33,13 @@ java_binary(
     runtime_deps = [":jooq_codegen_runner_lib"],
 )
 
+# JOOQ generates exactly these files for the current schema (verified against DDLDatabase output
+# with jooq-meta-extensions 3.19.11). If a future schema change or JOOQ upgrade causes the genrule
+# to fail with "unexpected output", run the runner manually to /tmp/out and compare:
+#   bazel run //kotlin:jooq_codegen_runner -- db/migrations/20260421000000_create_bracket_pair.sql /tmp/out
+#   find /tmp/out -name "*.java" | sort
+# $(locations //db:migrations) expands to sorted paths — matches the timestamp-prefix migration
+# naming convention, so DDL execution order is stable across multiple migration files.
 genrule(
     name = "jooq_generated_srcs",
     srcs = ["//db:migrations"],
