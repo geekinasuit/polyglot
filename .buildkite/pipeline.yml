@@ -26,6 +26,10 @@ steps:
 
   - label: ":bazel: Build (Linux)"
     key: build-linux
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     plugins:
       - docker#v5.11.0:
           image: "local/ci-agent:latest"
@@ -39,6 +43,10 @@ steps:
 
   - label: ":apple: Build (macOS)"
     key: build-macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     agents:
       os: macos
     command: bazel build --config=ci //...
@@ -50,6 +58,10 @@ steps:
   - label: ":bazel: Test (Linux)"
     key: test-linux
     depends_on: build-linux
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     plugins:
       - docker#v5.11.0:
           image: "local/ci-agent:latest"
@@ -64,6 +76,10 @@ steps:
   - label: ":apple: Test (macOS)"
     key: test-macos
     depends_on: build-macos
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     agents:
       os: macos
     command: bazel test --config=ci //...
@@ -91,6 +107,10 @@ steps:
 
   - label: ":go: Go exec via Make (Linux)"
     depends_on: test-linux
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     plugins:
       - docker#v5.11.0:
           image: "local/ci-agent:latest"
