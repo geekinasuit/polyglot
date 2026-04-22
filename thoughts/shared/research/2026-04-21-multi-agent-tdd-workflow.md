@@ -116,6 +116,13 @@ Design principles:
   the type carries meaning
 - Use fakes over mocks — a few lines of in-memory state couples less than a mock framework
 - Where the Architect left a decision open, make it yourself; document the rationale
+- **Design for the call site.** A public API is not just a contract — it is the code that
+  callers will write. Where a wrapper type could expose domain-relevant methods directly
+  (rather than requiring callers to reach into fields), prefer the wrapper. A call to
+  `telemetry.recordRequest(attrs)` is cleaner than `telemetry.requestCounter.add(1, attrs)`.
+  The same principle improves testability: a wrapper with a meaningful interface is easier
+  to fake than a struct of library objects. This is a judgment call, not an absolute — apply
+  it where the result is genuinely cleaner, not as a reflex to wrap everything.
 
 Not responsible for: implementation bodies, private helper extraction, internal state structure.
 
@@ -203,6 +210,17 @@ VCS: This repo uses jj (jujutsu). Never run git commands.
 Build: Use bazel (not bazelisk) for all build and test commands.
 Style: Run ktfmt on every .kt file you write or modify before considering work done.
 Shell safety: (same as above)
+Bazel output tree: Do not read files under bazel-out/ or bazel-bin/. Those paths are
+  config-stamped, volatile, and not a readable API. Use narrower signals instead:
+  - Build/test success: bazel exit code + stderr
+  - Dependency graph: bazel query 'deps(...)'
+  - Codegen output shape: run the generator to a temp dir, then `find /tmp/out -name "*.java"`
+    (or equivalent) — this gives the actual generator output, not a cached artifact
+  - Generated code content: write a test that imports the expected type and asserts on it;
+    do not read the generated .java/.kt source files directly. Tests verify what matters
+    (the type is accessible and correctly shaped) and run in CI.
+  `find` on a known output directory is fine for discovering file shape; reading file
+  content from bazel-out is almost never the right approach.
 ```
 
 Adjust the VCS/build/style constraints to match the target repo's toolchain. The shell
@@ -278,6 +296,7 @@ Mark: fixed (TDD Designer and Coder must not deviate) | provisional (TDD Designe
 ```
 Constraints:
 - VCS, build, style, shell safety: [see above]
+- Bazel output tree: [see above — do not read bazel-out/; use find for shape, tests for content]
 
 Read first:
   <ARCH_DOC> [primary constraint — strategic boundaries, not a complete spec]
@@ -296,6 +315,11 @@ Design and test principles:
 - Where Architect left a decision open, make it yourself; document rationale in comments
 - Genuine strategic tensions → check with Architect before committing
 - Tests must compile and fail before Coder starts
+- Design for the call site: a public API is code that callers will write. Where a wrapper
+  type could expose domain-relevant methods directly rather than requiring callers to reach
+  through to underlying fields, prefer the wrapper. This also improves testability — a type
+  with a meaningful interface is easier to fake than a struct of library objects. Judgment
+  call; apply where it produces genuinely cleaner code, not reflexively.
 
 Coverage (adapt to feature):
 - Each repository/data-access contract: happy path, edge cases, error conditions
@@ -315,6 +339,7 @@ Coder must not change your type/interface/sig definitions without agreement + es
 ```
 Constraints:
 - VCS, build, style, shell safety: [see above]
+- Bazel output tree: [see above — do not read bazel-out/; use find for shape, tests for content]
 
 Read first:
   <ARCH_DOC> [primary reference]
