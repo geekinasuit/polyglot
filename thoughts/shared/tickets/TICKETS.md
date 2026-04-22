@@ -26,6 +26,7 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `PY-NNN` | Python implementation work |
 | `RUST-NNN` | Rust implementation work |
 | `TS-NNN` | TypeScript implementation work |
+| `DB-NNN` | Database schema, migrations, and cross-language DB tooling |
 | `BUILD-NNN` | Build system and tooling (Bazel, bzlmod, rules) |
 | `CI-NNN` | CI, automation, and testing infrastructure |
 | `OPT-NNN` | Performance optimization |
@@ -37,6 +38,10 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | File | Area | Summary |
 |---|---|---|
+| `DB-001-schema-migrations-setup.md` | database, migrations, cross-language | Flyway migration tooling + `db/migrations/` directory + V1 `bracket_pair` schema |
+| `KT-005-jooq-codegen.md` | kotlin, database, jooq, bazel | JOOQ + jooq-kotlin dependency + DDL-based codegen + Bazel genrule; prereq: DB-001 |
+| `KT-006-database-adapter.md` | kotlin, database, dagger, configuration | HikariCP DataSource, Flyway on startup, Dagger DatabaseModule, SQLite/PG support; prereq: DB-001 |
+| `KT-007-bracket-config-feature.md` | kotlin, database, feature | DB-backed bracket pairs: parameterize algorithm + BracketPairRepository + service wiring; prereq: DB-001, KT-005, KT-006 |
 | `KT-004-kotlin-docker-deployment.md` | kotlin, docker, deployment | Docker container build for Kotlin service; staging + production profiles |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `BUILD-001-grpc-kotlin-bzlmod-migration.md` | kotlin, bazel, grpc | Migrate to bzlmod-native `grpc_kotlin` when upstream supports it |
