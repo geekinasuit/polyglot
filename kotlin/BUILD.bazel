@@ -75,6 +75,7 @@ java_binary(
     name = "brackets_service",
     main_class = "com.geekinasuit.polyglot.brackets.service.ServiceKt",
     visibility = ["//visibility:public"],
+    data = ["//db:migrations"],
     runtime_deps = [
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/service:service_lib",
     ],

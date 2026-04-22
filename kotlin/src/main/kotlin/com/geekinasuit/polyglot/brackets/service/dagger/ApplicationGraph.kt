@@ -12,6 +12,7 @@ import io.opentelemetry.api.trace.Tracer
     modules =
         [
             ApplicationGraphModule::class,
+            DatabaseModule::class,
             GrpcHandlersModule::class,
             InterceptorsModule::class,
             TelemetryModule::class,

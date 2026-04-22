@@ -11,6 +11,7 @@ import dagger.Component
     modules =
         [
             TestApplicationGraphModule::class,
+            TestDatabaseModule::class,
             GrpcHandlersModule::class,
             InterceptorsModule::class,
             FakeTelemetryModule::class,

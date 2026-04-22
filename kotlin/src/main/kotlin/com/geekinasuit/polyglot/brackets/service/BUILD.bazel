@@ -20,6 +20,9 @@ kt_jvm_library(
         "@maven//:com_github_ajalt_clikt_clikt_jvm",
         "@maven//:com_google_dagger_dagger",
         "@maven//:com_linecorp_armeria_armeria",
+        "@maven//:com_zaxxer_HikariCP",
+        "@maven//:org_flywaydb_flyway_core",
+        "@maven//:org_jooq_jooq",
         "@maven//:com_linecorp_armeria_armeria_grpc",
         "@maven//:io_github_oshai_kotlin_logging_jvm",
         "@maven//:io_grpc_grpc_api",
@@ -30,6 +33,7 @@ kt_jvm_library(
     ],
     runtime_deps = [
         "@maven//:ch_qos_logback_logback_classic",
+        "@maven//:com_h2database_h2",
         "@maven//:net_logstash_logback_logstash_logback_encoder",
         "//kotlin/src/main/resources:service_resources",
     ],
