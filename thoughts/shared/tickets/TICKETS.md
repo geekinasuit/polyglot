@@ -47,6 +47,8 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `KT-003-kotlin-dagger-client-di.md` | kotlin, grpc, di | Dagger DI for the gRPC client binary; prereq: server DI ticket |
 | `CI-002-cross-language-e2e-matrix.md` | testing, ci, grpc, multi-language | Matrix test for every (client lang) × (server lang) combination; prereq: all gRPC client+server tickets |
 | `CI-003-integration-test-grpc-readiness-probe.md` | ci, testing, kotlin | Replace TCP readiness check with gRPC-level probe; root cause of socket-disconnection flakes on startup |
+| `CI-004-buildkite-ci-env-validation.md` | ci, buildkite, docker | Audit and explicitly validate/install required tools in Buildkite pipeline steps |
+| `CI-005-macos-agent-isolation.md` | ci, buildkite, macos, infra | macOS CI agent isolation via VMs or sandboxed environments |
 | `GO-001-go-grpc-client-server.md` | golang, grpc | Implement gRPC service and client; prereq: proto target fix; model after Kotlin |
 | `JAVA-001-java-grpc-client-server.md` | java, grpc | Implement gRPC service and client; model after Kotlin |
 | `PY-001-python-grpc-client-server.md` | python, grpc | Implement gRPC service and client; prereq: proto fix; model after Kotlin |
