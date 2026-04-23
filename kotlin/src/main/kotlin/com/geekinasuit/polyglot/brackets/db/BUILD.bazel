@@ -1,0 +1,17 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "db_lib",
+    srcs = glob(["*.kt"]),
+    plugins = [
+        "@dagger-grpc//third_party/dagger:dagger-compiler",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//kotlin:jooq_db_lib",
+        "@dagger-grpc//api",
+        "@maven//:com_google_dagger_dagger",
+        "@maven//:javax_inject_javax_inject",
+        "@maven//:org_jooq_jooq",
+    ],
+)

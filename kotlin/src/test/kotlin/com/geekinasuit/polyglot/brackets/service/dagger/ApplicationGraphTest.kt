@@ -1,5 +1,6 @@
 package com.geekinasuit.polyglot.brackets.service.dagger
 
+import com.geekinasuit.polyglot.brackets.config.DatabaseConfig
 import com.geekinasuit.polyglot.brackets.config.ServiceAppConfig
 import com.geekinasuit.polyglot.brackets.config.ServiceConfig
 import com.geekinasuit.polyglot.brackets.config.TelemetryConfig
@@ -11,6 +12,7 @@ class ApplicationGraphTest {
       ServiceAppConfig(
           service = ServiceConfig(host = "127.0.0.1", port = 0),
           telemetry = TelemetryConfig(),
+          db = DatabaseConfig(),
       )
 
   @Test
@@ -24,5 +26,14 @@ class ApplicationGraphTest {
     val graph = TestApplicationGraph.builder().config(testConfig).build()
     val server = graph.server()
     assertThat(server).isNotNull()
+  }
+
+  @Test
+  fun callScopeGraphProvides() {
+    val graph = TestApplicationGraph.builder().config(testConfig).build()
+    val callScope = graph.callScope()
+    assertThat(callScope).isNotNull()
+    val endpoint = callScope.balance()
+    assertThat(endpoint).isNotNull()
   }
 }

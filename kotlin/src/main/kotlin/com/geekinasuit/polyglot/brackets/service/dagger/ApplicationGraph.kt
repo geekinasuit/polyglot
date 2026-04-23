@@ -2,6 +2,7 @@ package com.geekinasuit.polyglot.brackets.service.dagger
 
 import com.geekinasuit.daggergrpc.api.ApplicationScope
 import com.geekinasuit.polyglot.brackets.config.ServiceAppConfig
+import com.geekinasuit.polyglot.brackets.db.BracketsDbModule
 import com.linecorp.armeria.server.Server
 import dagger.BindsInstance
 import dagger.Component
@@ -12,6 +13,7 @@ import io.opentelemetry.api.trace.Tracer
     modules =
         [
             ApplicationGraphModule::class,
+            BracketsDbModule::class,
             DatabaseModule::class,
             GrpcHandlersModule::class,
             InterceptorsModule::class,
