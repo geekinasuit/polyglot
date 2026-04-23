@@ -2,7 +2,7 @@
 id: KT-007
 title: DB-backed bracket configuration — parameterize algorithm, repository, service integration
 area: kotlin, database, feature
-status: open
+status: resolved
 created: 2026-04-21
 ---
 
