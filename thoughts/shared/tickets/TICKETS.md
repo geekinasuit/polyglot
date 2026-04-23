@@ -41,7 +41,6 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `DB-001-schema-migrations-setup.md` | database, migrations, cross-language | Flyway (JVM) + dbmate (non-JVM) dual-tool migration setup; `db/migrations/`; initial `bracket_pair` schema |
 | `KT-005-jooq-codegen.md` | kotlin, database, jooq, bazel | JOOQ + jooq-kotlin dependency + DDL-based codegen + Bazel genrule; prereq: DB-001 |
 | `KT-006-database-adapter.md` | kotlin, database, dagger, configuration | HikariCP DataSource, Flyway on startup, Dagger DatabaseModule, SQLite/PG support; prereq: DB-001 |
-| `KT-007-bracket-config-feature.md` | kotlin, database, feature | DB-backed bracket pairs: parameterize algorithm + BracketPairRepository + service wiring; prereq: DB-001, KT-005, KT-006 |
 | `KT-004-kotlin-docker-deployment.md` | kotlin, docker, deployment | Docker container build for Kotlin service; staging + production profiles |
 | `CI-001-github-action-ticket-close-sync.md` | automation, github, tickets | GitHub Action safety net: sync ticket state when issue is closed without a PR ticket update |
 | `BUILD-001-grpc-kotlin-bzlmod-migration.md` | kotlin, bazel, grpc | Migrate to bzlmod-native `grpc_kotlin` when upstream supports it |
@@ -64,5 +63,6 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 
 | Summary | Resolution |
 |---|---|
+| KT-007: DB-backed bracket config | Implemented: `BracketPairRepository` (JOOQ), `BracketsDbModule`, `BracketsServiceTelemetry`, `@GrpcCallScope` endpoint wiring, tests; merged in PR #50 |
 | Machine-specific cache config in repo `.bazelrc` | Resolved directly: `--disk_cache` and `--remote_cache` lines removed from `.bazelrc`; developers configure cache in `user.bazelrc` (gitignored) or `~/.bazelrc` |
 | Buildkite CI pipeline (issue #13, PR #14) | Implemented pipeline mirroring GitHub Actions: Linux steps via Docker plugin, macOS steps on native agent (`os=macos`). Fixes during stabilization: cluster assignment, arch-aware bazelisk download, `build-essential` for `rules_cc`, Go image bumped to 1.25, `$$`-escaped Buildkite variable interpolation in Docker command blocks. |
