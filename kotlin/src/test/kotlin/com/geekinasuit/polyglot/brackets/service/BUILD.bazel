@@ -1,0 +1,21 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "BalanceServiceEndpointTest",
+    srcs = ["BalanceServiceEndpointTest.kt"],
+    associates = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/service:service_lib",
+    ],
+    test_class = "com.geekinasuit.polyglot.brackets.service.BalanceServiceEndpointTest",
+    deps = [
+        "//kotlin:balance_grpc_gen",
+        "@maven//:com_google_truth_truth",
+        "@maven//:io_grpc_grpc_api",
+        "@maven//:io_opentelemetry_opentelemetry_api",
+        "@maven//:junit_junit",
+    ],
+    runtime_deps = [
+        "@maven//:ch_qos_logback_logback_classic",
+        "//kotlin/src/main/resources:service_resources",
+    ],
+)

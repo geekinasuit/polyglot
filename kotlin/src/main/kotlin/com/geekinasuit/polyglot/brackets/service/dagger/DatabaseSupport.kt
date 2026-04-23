@@ -9,8 +9,10 @@ import org.flywaydb.core.Flyway
 import org.jooq.SQLDialect
 
 fun createMigratedDataSource(config: DatabaseConfig): DataSource {
-  val migrationsPath =
-      Paths.get(System.getenv("RUNFILES_DIR") ?: ".", "_main/db/migrations").toAbsolutePath()
+  // RUNFILES_DIR is set by the Bazel test runner; JAVA_RUNFILES is set by the java_binary wrapper.
+  // Both point to the runfiles tree root. Fall back to "." only as a last resort.
+  val runfilesDir = System.getenv("RUNFILES_DIR") ?: System.getenv("JAVA_RUNFILES") ?: "."
+  val migrationsPath = Paths.get(runfilesDir, "_main/db/migrations").toAbsolutePath()
 
   val hikariConfig =
       HikariConfig().apply {

@@ -1,0 +1,12 @@
+load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "jooq_codegen_runner_lib",
+    srcs = ["JooqCodegenRunner.kt"],
+    visibility = ["//kotlin:__pkg__"],
+    deps = [
+        "@maven//:com_h2database_h2",
+        "@maven//:org_jooq_jooq_codegen",
+        "@maven//:org_jooq_jooq_meta_extensions",
+    ],
+)

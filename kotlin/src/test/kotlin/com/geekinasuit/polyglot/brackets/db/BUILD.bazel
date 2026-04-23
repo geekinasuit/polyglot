@@ -10,3 +10,22 @@ kt_jvm_test(
         "@maven//:junit_junit",
     ],
 )
+
+kt_jvm_test(
+    name = "BracketPairRepositoryTest",
+    srcs = ["BracketPairRepositoryTest.kt"],
+    data = ["//db:migrations"],
+    test_class = "com.geekinasuit.polyglot.brackets.db.BracketPairRepositoryTest",
+    deps = [
+        "//kotlin:jooq_db_lib",
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/db:db_lib",
+        "@maven//:com_google_truth_truth",
+        "@maven//:com_zaxxer_HikariCP",
+        "@maven//:junit_junit",
+        "@maven//:org_flywaydb_flyway_core",
+        "@maven//:org_jooq_jooq",
+    ],
+    runtime_deps = [
+        "@maven//:com_h2database_h2",
+    ],
+)

@@ -15,22 +15,13 @@ kt_jvm_grpc_library(
     deps = [":balance_proto_gen"],
 )
 
-# Codegen runner library
-kt_jvm_library(
-    name = "jooq_codegen_runner_lib",
-    srcs = ["src/main/kotlin/com/geekinasuit/polyglot/brackets/db/codegen/JooqCodegenRunner.kt"],
-    deps = [
-        "@maven//:org_jooq_jooq_codegen",
-        "@maven//:org_jooq_jooq_meta_extensions",
-        "@maven//:com_h2database_h2",
-    ],
-)
-
 # Codegen runner binary
 java_binary(
     name = "jooq_codegen_runner",
     main_class = "com.geekinasuit.polyglot.brackets.db.codegen.JooqCodegenRunnerKt",
-    runtime_deps = [":jooq_codegen_runner_lib"],
+    runtime_deps = [
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/db/codegen:jooq_codegen_runner_lib",
+    ],
 )
 
 # JOOQ generates exactly these files for the current schema (verified against DDLDatabase output

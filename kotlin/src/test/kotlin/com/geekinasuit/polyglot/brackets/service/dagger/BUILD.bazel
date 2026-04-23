@@ -13,6 +13,7 @@ kt_jvm_test(
     test_class = "com.geekinasuit.polyglot.brackets.service.dagger.ApplicationGraphTest",
     deps = [
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/db:db_lib",
         "@dagger-grpc//api",
         "@maven//:com_google_dagger_dagger",
         "@maven//:com_google_truth_truth",

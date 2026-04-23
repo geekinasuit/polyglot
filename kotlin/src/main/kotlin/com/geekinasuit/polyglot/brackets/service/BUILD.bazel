@@ -13,6 +13,7 @@ kt_jvm_library(
         "//kotlin:balance_grpc_gen",
         "//kotlin/src/main/kotlin/bracketskt",
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/config:config_lib",
+        "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/db:db_lib",
         "//kotlin/src/main/kotlin/com/geekinasuit/polyglot/brackets/telemetry:telemetry_lib",
         "@dagger-grpc//api",
         "@dagger-grpc//util/armeria",
