@@ -9,10 +9,14 @@ import org.flywaydb.core.Flyway
 import org.jooq.SQLDialect
 
 fun createMigratedDataSource(config: DatabaseConfig): DataSource {
-  // RUNFILES_DIR is set by the Bazel test runner; JAVA_RUNFILES is set by the java_binary wrapper.
-  // Both point to the runfiles tree root. Fall back to "." only as a last resort.
-  val runfilesDir = System.getenv("RUNFILES_DIR") ?: System.getenv("JAVA_RUNFILES") ?: "."
-  val migrationsPath = Paths.get(runfilesDir, "_main/db/migrations").toAbsolutePath()
+  // Determine Flyway migration location based on execution context:
+  //   RUNFILES_DIR: set by the Bazel test runner
+  //   JAVA_RUNFILES: set by the java_binary shell wrapper
+  //   neither: running from a deploy jar; migrations are bundled as classpath resources
+  val migrationsLocation =
+      (System.getenv("RUNFILES_DIR") ?: System.getenv("JAVA_RUNFILES"))?.let { runfilesDir ->
+        "filesystem:${Paths.get(runfilesDir, "_main/db/migrations").toAbsolutePath()}"
+      } ?: "classpath:db/migrations"
 
   val hikariConfig =
       HikariConfig().apply {
@@ -25,7 +29,7 @@ fun createMigratedDataSource(config: DatabaseConfig): DataSource {
         .dataSource(dataSource)
         .sqlMigrationPrefix("")
         .sqlMigrationSeparator("_")
-        .locations("filesystem:$migrationsPath")
+        .locations(migrationsLocation)
         .load()
         .migrate()
   } catch (e: Exception) {

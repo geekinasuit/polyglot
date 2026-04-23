@@ -3,3 +3,11 @@ filegroup(
     srcs = glob(["migrations/*.sql"]),
     visibility = ["//visibility:public"],
 )
+
+# Packages migration SQL files as classpath resources at path db/migrations/*.sql,
+# so the service can locate them when running from a deploy jar (no runfiles tree).
+java_library(
+    name = "migrations_resources",
+    resources = glob(["migrations/*.sql"]),
+    visibility = ["//visibility:public"],
+)
