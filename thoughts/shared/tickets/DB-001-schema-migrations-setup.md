@@ -2,17 +2,22 @@
 id: DB-001
 title: Schema migration tooling and initial bracket_pair schema
 area: database, migrations, cross-language
-status: open
+status: resolved
 created: 2026-04-21
+resolved_date: 2026-04-22
 ---
 
 ## Summary
 
 Establish a canonical location for SQL schema files and configure a dual-tool migration strategy: **Flyway** (embedded Java API) for JVM-based implementations, **dbmate** (single static binary, no JVM dependency) for all other languages. Both tools read the same migration files. Down migrations are omitted throughout — they are of dubious value and create cross-tool compatibility issues.
 
-## Current State
+## Resolution
 
-No SQL schema files or migration tooling exist. The bracket algorithm hardcodes its pair definitions in Kotlin source.
+`db/migrations/20260421000000_create_bracket_pair.sql` created with `bracket_pair` schema and seed data for the three standard pairs. Filename convention validated: dbmate timestamp format confirmed compatible with Flyway via `sqlMigrationPrefix=""` + `sqlMigrationSeparator="_"`. Migration files exposed as a Bazel `filegroup` (`//db:migrations`) and also bundled as classpath resources (`//db:migrations_resources`) for deploy-jar execution. Implemented in PR #43; deploy-jar classpath resource bundling added in PR #52.
+
+## Original State
+
+No SQL schema files or migration tooling existed. The bracket algorithm hardcoded its pair definitions in Kotlin source.
 
 ## Migration File Format
 

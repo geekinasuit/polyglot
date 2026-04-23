@@ -2,13 +2,18 @@
 id: KT-002
 title: Introduce Dagger DI via dagger-grpc integration
 area: kotlin, grpc, di
-status: open
+status: resolved
 created: 2026-03-07
+resolved_date: 2026-04-22
 ---
 
 # Kotlin: Introduce Dagger DI via dagger-grpc integration
 
-## Summary
+## Resolution
+
+Dagger 2 with `dagger-grpc` introduced for the Kotlin service. `@ApplicationScope` `ApplicationGraph` `@Component` with `BracketsDbModule`, `DatabaseModule`, `GrpcHandlersModule`, `InterceptorsModule`, `TelemetryModule`, `ServerModule`. `@GrpcCallScope` subcomponent (`GrpcCallScopeGraph`) handles per-call binding. `BalanceServiceEndpoint` annotated with `@Inject` constructor. `FakeTelemetryModule` swaps in no-op OTel for tests. All wiring verified with `bazel test //kotlin/...`.
+
+## Original Summary
 
 The Kotlin service and client currently wire all objects manually (hardcoded construction
 in `run()` methods). As the project grows — particularly with the OTel telemetry subsystem,

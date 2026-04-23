@@ -2,17 +2,22 @@
 id: KT-005
 title: JOOQ integration and DDL-based code generation for Kotlin
 area: kotlin, database, jooq, bazel
-status: open
+status: resolved
 created: 2026-04-21
+resolved_date: 2026-04-22
 ---
 
 ## Summary
 
 Add JOOQ and its Kotlin extensions to the Kotlin build, configure code generation from the Flyway DDL migration files (no live database required at build time), and integrate the codegen step into the Bazel build.
 
-## Current State
+## Resolution
 
-No JOOQ dependency exists. DB-001 will provide the schema DDL in `db/migrations/`.
+`org.jooq:jooq`, `org.jooq:jooq-kotlin`, and `org.jooq:jooq-meta-extensions` added via bzlmod `maven.install`. `JooqCodegenRunner.kt` (`//kotlin/.../db/codegen:jooq_codegen_runner_lib`) runs DDLDatabase codegen against the migration SQL at build time. Bazel `genrule` (`//kotlin:jooq_generated_srcs`) produces `Tables.java`, `tables/BracketPair.java`, `tables/records/BracketPairRecord.java`, `Keys.java`, `DefaultCatalog.java`, `DefaultSchema.java`, exposed as `//kotlin:jooq_db_lib`. Generated files are `.gitignore`d. Implemented in PR #45.
+
+## Original State
+
+No JOOQ dependency existed. DB-001 was to provide the schema DDL in `db/migrations/`.
 
 ## Prerequisites
 

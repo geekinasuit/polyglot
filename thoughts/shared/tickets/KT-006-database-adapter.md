@@ -2,8 +2,9 @@
 id: KT-006
 title: Database adapter layer — DataSource config, connection pool, Flyway, Dagger wiring
 area: kotlin, database, dagger, configuration
-status: open
+status: resolved
 created: 2026-04-21
+resolved_date: 2026-04-22
 github_issue: 49
 ---
 
@@ -11,9 +12,13 @@ github_issue: 49
 
 Add the runtime database layer to the Kotlin service: a `DatabaseConfig` Hoplite config stanza, a HikariCP `DataSource` factory supporting SQLite (local/test) and PostgreSQL (production), automatic Flyway migration on startup, and a Dagger module that binds `DataSource` and JOOQ `DSLContext` for injection.
 
-## Current State
+## Resolution
 
-The service has Hoplite config (ServiceConfig, TelemetryConfig) and a Dagger application graph. No database wiring exists.
+`DatabaseConfig` added to `Config.kt` and wired into `ServiceAppConfig`. HikariCP `DataSource` factory in `DatabaseSupport.kt` supports SQLite (local/test) and PostgreSQL (prod), with dialect auto-detection. Flyway runs on DataSource creation; migration location resolves via `RUNFILES_DIR` → `JAVA_RUNFILES` → `classpath:db/migrations` (deploy jar fallback). `BracketsDbModule` binds `DataSource` and `DSLContext`. All deps added to `service_lib`. `bazel test //kotlin/...` passes. Implemented in PR #48; deploy-jar classpath fallback added in PR #52.
+
+## Original State
+
+The service had Hoplite config (ServiceConfig, TelemetryConfig) and a Dagger application graph. No database wiring existed.
 
 ## Prerequisites
 
