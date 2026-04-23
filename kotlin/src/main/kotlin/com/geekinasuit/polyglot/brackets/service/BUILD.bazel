@@ -33,6 +33,7 @@ kt_jvm_library(
         "@maven//:javax_inject_javax_inject",
     ],
     runtime_deps = [
+        "//db:migrations_resources",
         "@maven//:ch_qos_logback_logback_classic",
         "@maven//:com_h2database_h2",
         "@maven//:net_logstash_logback_logstash_logback_encoder",
