@@ -40,7 +40,9 @@ private fun buildTracerProvider(resource: Resource, config: TelemetryConfig): Sd
     sdkTracerProvider {
       setResource(resource)
       if (config.tracingEnabled && config.otlpEndpoint != null) {
-        addSpanProcessor(batchSpanProcessor(otlpSpanExporter { setEndpoint(config.otlpEndpoint) }))
+        addSpanProcessor(
+            batchSpanProcessor(otlpSpanExporter { setEndpoint(config.otlpEndpoint!!) })
+        )
       }
     }
 
@@ -49,7 +51,7 @@ private fun buildMeterProvider(resource: Resource, config: TelemetryConfig): Sdk
       setResource(resource)
       if (config.metricsEnabled && config.otlpEndpoint != null) {
         registerMetricReader(
-            periodicMetricReader(otlpMetricExporter { setEndpoint(config.otlpEndpoint) }) {
+            periodicMetricReader(otlpMetricExporter { setEndpoint(config.otlpEndpoint!!) }) {
               setInterval(Duration.ofSeconds(config.metricsExportIntervalSeconds))
             }
         )
@@ -61,7 +63,7 @@ private fun buildLoggerProvider(resource: Resource, config: TelemetryConfig): Sd
       setResource(resource)
       if (config.loggingExportEnabled && config.effectiveLogEndpoint != null) {
         addLogRecordProcessor(
-            batchLogRecordProcessor(otlpLogExporter { setEndpoint(config.effectiveLogEndpoint) })
+            batchLogRecordProcessor(otlpLogExporter { setEndpoint(config.effectiveLogEndpoint!!) })
         )
       }
     }
