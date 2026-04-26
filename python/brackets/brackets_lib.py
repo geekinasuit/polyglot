@@ -1,4 +1,4 @@
-# import protobuf.example_pb2 as pb
+import protobuf.example_pb2 as pb
 
 class BracketsNotBalancedException(Exception):
     def __init__(self, msg):
@@ -28,5 +28,4 @@ def balanced_brackets(text):
 
 
 def foo():
-    # return pb.Something(1, "foo", None)
-    return None
+    return pb.Something(a=1, b="foo", c=None)

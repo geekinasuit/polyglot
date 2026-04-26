@@ -1,0 +1,21 @@
+load("@py_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_test")
+
+py_test(
+    name = "test_brackets_lib",
+    srcs = ["test_brackets_lib.py"],
+    deps = [
+        "//python/brackets:brackets",
+        requirement("pytruth"),
+    ],
+)
+
+py_test(
+    name = "test_grpc",
+    srcs = ["test_grpc.py"],
+    deps = [
+        "//python:balance_proto_gen",
+        "//python:balance_grpc_gen",
+        requirement("grpcio"),
+    ],
+)

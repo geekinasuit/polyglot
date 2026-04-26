@@ -1,8 +1,10 @@
-from python.brackets_py_lib.brackets_lib import balanced_brackets, BracketsNotBalancedException, foo
+from brackets.brackets_lib import balanced_brackets, BracketsNotBalancedException, foo
 
 import unittest
 
 from truth.truth import AssertThat
+
+import protobuf.example_pb2 as pb
 
 class ExampleTest(unittest.TestCase):
     def testEmptySuccess(self):
@@ -39,7 +41,10 @@ class ExampleTest(unittest.TestCase):
 
     def testFoo(self):
         something = foo()
-        pass # Should return a Something, but we can't import it.
+        AssertThat(something).IsInstanceOf(pb.Something)
+        AssertThat(something.a).IsEqualTo(1)
+        AssertThat(something.b).IsEqualTo("foo")
+        AssertThat(something.c).IsNone()
 
 
 if __name__ == "__main__":

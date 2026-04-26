@@ -1,0 +1,21 @@
+load("@rules_python//python:proto.bzl", "py_proto_library")
+load("@grpc//bazel:python_rules.bzl", "py_grpc_library")
+
+py_proto_library(
+    name = "example_proto_gen",
+    visibility = ["//visibility:public"],
+    deps = ["//protobuf:protobuf"],
+)
+
+py_proto_library(
+    name = "balance_proto_gen",
+    visibility = ["//visibility:public"],
+    deps = ["//protobuf:balance_rpc"],
+)
+
+py_grpc_library(
+    name = "balance_grpc_gen",
+    srcs = ["//protobuf:balance_rpc"],
+    visibility = ["//visibility:public"],
+    deps = [":balance_proto_gen"],
+)
