@@ -52,6 +52,13 @@ A GitHub Action (see `CI-001-github-action-ticket-close-sync.md`) will act as a 
 | `GO-001-go-grpc-client-server.md` | golang, grpc | Implement gRPC service and client; prereq: proto target fix; model after Kotlin |
 | `JAVA-001-java-grpc-client-server.md` | java, grpc | Implement gRPC service and client; model after Kotlin |
 | `PY-001-python-grpc-client-server.md` | python, grpc | Implement gRPC service and client; prereq: proto fix; model after Kotlin |
+| `PY-003-python-src-structure-restructure.md` | python, structure | Restructure Python codebase to match Kotlin src/main and src/test layout |
+| `PY-004-python-grpc-generation-setup.md` | python, grpc, bazel | Set up gRPC code generation for Python using py_grpc_library |
+| `PY-005-python-grpc-service-implementation.md` | python, grpc | Implement Python gRPC service endpoint |
+| `PY-006-python-grpc-client-implementation.md` | python, grpc | Implement Python gRPC client |
+| `PY-007-python-bazel-binaries.md` | python, bazel | Add Bazel py_binary targets for Python service and client |
+| `PY-008-python-service-client-tests.md` | python, testing | Add unit and integration tests for Python gRPC service and client |
+| `PY-009-python-library-selection.md` | python, libraries | Research and select Python community-standard libraries for gRPC microservice implementation |
 | `RUST-001-rust-grpc-client-server.md` | rust, grpc | Add `tonic`; implement gRPC service and client; model after Kotlin |
 | `TS-001-typescript-grpc-openapi-variant.md` | typescript, grpc, openapi | New language variant: gRPC svc+client (Kotlin-compatible) + OpenAPI REST; dual yarn/npm + Bazel build |
 
